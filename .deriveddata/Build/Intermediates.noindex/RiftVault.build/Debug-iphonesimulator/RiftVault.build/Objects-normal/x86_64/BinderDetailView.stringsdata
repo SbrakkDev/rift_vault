@@ -1,0 +1,160 @@
+{
+  "source": "/Users/davidebusa/Documents/local/rift_vault/RiftVault/Views/BinderDetailView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Nessun binder disponibile. Sincronizza il catalogo per popolare la libreria.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 48
+        }
+      },
+      {
+        "comment": "",
+        "key": "Modalita",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 138
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cerca carta o collector number",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 181
+        }
+      },
+      {
+        "comment": "",
+        "key": "Mostra solo carte possedute",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 192
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nessuna carta trovata per %@.",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 215
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nessuna carta corrisponde a \"%@\".",
+        "location": {
+          "startingColumn": 85,
+          "startingLine": 215
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ · %@",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 541
+        }
+      },
+      {
+        "comment": "",
+        "key": "#%@",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 546
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 556
+        }
+      },
+      {
+        "comment": "",
+        "key": "Chiudi",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 630
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 656
+        }
+      },
+      {
+        "comment": "",
+        "key": "Filtri",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 829
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ordine",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 754
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ordine",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 758
+        }
+      },
+      {
+        "comment": "",
+        "key": "Tipi carta",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 770
+        }
+      },
+      {
+        "comment": "",
+        "key": "Tutti",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 774
+        }
+      },
+      {
+        "comment": "",
+        "key": "Rune",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 795
+        }
+      },
+      {
+        "comment": "",
+        "key": "Tutte",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 799
+        }
+      },
+      {
+        "comment": "",
+        "key": "Chiudi",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 824
+        }
+      }
+    ]
+  },
+  "version": 1
+}

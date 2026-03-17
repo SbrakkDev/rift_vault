@@ -1,0 +1,48 @@
+{
+  "source": "/Users/davidebusa/Documents/local/rift_vault/RiftVault/Views/StatisticsView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Salva una partita dal Companion per iniziare a raccogliere statistiche.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 25
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lldW · %lldL · %lldD",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 38
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld%%",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 34
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nessuna partita registrata.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 52
+        }
+      },
+      {
+        "comment": "",
+        "key": "vs %@ · %lld-%lld",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 70
+        }
+      }
+    ]
+  },
+  "version": 1
+}

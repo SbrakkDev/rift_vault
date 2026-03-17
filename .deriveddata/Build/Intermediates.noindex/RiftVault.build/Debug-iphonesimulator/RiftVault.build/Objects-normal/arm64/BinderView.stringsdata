@@ -1,0 +1,80 @@
+{
+  "source": "/Users/davidebusa/Documents/local/rift_vault/RiftVault/Views/BinderView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "%lld / %lld carte",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 176
+        }
+      },
+      {
+        "comment": "",
+        "key": "Official Set Binder",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 294
+        }
+      },
+      {
+        "comment": "",
+        "key": "Apri binder",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 332
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 315
+        }
+      },
+      {
+        "comment": "",
+        "key": "/ %lld",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 318
+        }
+      },
+      {
+        "comment": "",
+        "key": "Artwork ufficiale",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 595
+        }
+      },
+      {
+        "comment": "",
+        "key": "Disponibile dopo sync RiftCodex",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 597
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 649
+        }
+      },
+      {
+        "comment": "",
+        "key": "life",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 651
+        }
+      }
+    ]
+  },
+  "version": 1
+}

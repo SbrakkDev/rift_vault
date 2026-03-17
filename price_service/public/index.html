@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rift Vault Price Service</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #081122;
+        --panel: #111b31;
+        --line: #243152;
+        --text: #f5f7fb;
+        --muted: #93a1c6;
+        --accent: #56d2ef;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Avenir Next", "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top, rgba(86, 210, 239, 0.18), transparent 32%),
+          linear-gradient(180deg, #0b1630 0%, var(--bg) 100%);
+        color: var(--text);
+      }
+
+      main {
+        width: min(920px, calc(100% - 32px));
+        margin: 48px auto;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: clamp(2.2rem, 5vw, 4rem);
+        line-height: 0.95;
+      }
+
+      p {
+        margin: 0 0 24px;
+        color: var(--muted);
+        font-size: 1.05rem;
+      }
+
+      .grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+
+      .card {
+        background: rgba(17, 27, 49, 0.9);
+        border: 1px solid var(--line);
+        padding: 18px;
+      }
+
+      .label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--accent);
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .value {
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+      code {
+        font-family: "SF Mono", ui-monospace, monospace;
+        font-size: 0.95rem;
+      }
+
+      ul {
+        margin: 12px 0 0;
+        padding-left: 18px;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Rift Vault Price Service</h1>
+      <p>Snapshot statica aggiornata ogni giorno per catalogo e prezzi carte.</p>
+
+      <div class="grid">
+        <section class="card">
+          <span class="label">Endpoint principali</span>
+          <div><code>/api/meta.json</code></div>
+          <div><code>/api/catalog.json</code></div>
+          <div><code>/api/prices.json</code></div>
+        </section>
+
+        <section class="card">
+          <span class="label">Endpoint granulari</span>
+          <div><code>/api/cards/&lt;card-id&gt;.json</code></div>
+          <div><code>/api/sets/origins.json</code></div>
+        </section>
+
+        <section class="card">
+          <span class="label">Uso app iPhone</span>
+          <ul>
+            <li>Scarica <code>/api/prices.json</code> per i prezzi.</li>
+            <li>Scarica <code>/api/catalog.json</code> se vuoi anche catalogo e immagini dal server.</li>
+          </ul>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

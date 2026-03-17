@@ -1,0 +1,14 @@
+{
+  "name": "rift-vault-price-service",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Daily Riftbound catalog and price sync for Rift Vault.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "sync": "node scripts/sync-prices.mjs",
+    "serve": "node scripts/serve-static-api.mjs"
+  }
+}

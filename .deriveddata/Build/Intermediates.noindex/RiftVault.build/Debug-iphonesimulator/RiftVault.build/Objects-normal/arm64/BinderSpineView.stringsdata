@@ -1,0 +1,272 @@
+{
+  "source": "/Users/davidebusa/Documents/local/rift_vault/RiftVault/Views/BinderSpineView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Nessun deck creato",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 76
+        }
+      },
+      {
+        "comment": "",
+        "key": "Usa il tasto + in alto per creare il tuo primo mazzo.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 80
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sei sicuro di voler eliminare?",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 234
+        }
+      },
+      {
+        "comment": "",
+        "key": "Carte nel mazzo",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 181
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nessuna carta aggiunta al mazzo.",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 186
+        }
+      },
+      {
+        "comment": "",
+        "key": "Modifica",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 201
+        }
+      },
+      {
+        "comment": "",
+        "key": "Elimina",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 216
+        }
+      },
+      {
+        "comment": "",
+        "key": "Elimina",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 235
+        }
+      },
+      {
+        "comment": "",
+        "key": "Annulla",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 239
+        }
+      },
+      {
+        "comment": "",
+        "key": "Il mazzo verra eliminato definitivamente.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 241
+        }
+      },
+      {
+        "comment": "",
+        "key": "Deck non trovato.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 246
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nome mazzo",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 388
+        }
+      },
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 393
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nuovo mazzo",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 400
+        }
+      },
+      {
+        "comment": "",
+        "key": "Carte nel mazzo",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 416
+        }
+      },
+      {
+        "comment": "",
+        "key": "Lista carte",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 439
+        }
+      },
+      {
+        "comment": "",
+        "key": "Destinazione",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 445
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cerca una carta",
+        "location": {
+          "startingColumn": 47,
+          "startingLine": 465
+        }
+      },
+      {
+        "comment": "",
+        "key": "Mostra solo carte possedute",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 492
+        }
+      },
+      {
+        "comment": "",
+        "key": "Deck non trovato.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 536
+        }
+      },
+      {
+        "comment": "",
+        "key": "Filtri",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 1099
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ordine",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 999
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ordine",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 1003
+        }
+      },
+      {
+        "comment": "",
+        "key": "Tipi carta",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 1015
+        }
+      },
+      {
+        "comment": "",
+        "key": "Tutti",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 1019
+        }
+      },
+      {
+        "comment": "",
+        "key": "Set",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 1040
+        }
+      },
+      {
+        "comment": "",
+        "key": "Tutti",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 1044
+        }
+      },
+      {
+        "comment": "",
+        "key": "Rune",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 1065
+        }
+      },
+      {
+        "comment": "",
+        "key": "Default legenda",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 1069
+        }
+      },
+      {
+        "comment": "",
+        "key": "Chiudi",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 1094
+        }
+      },
+      {
+        "comment": "",
+        "key": "Curva costi",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 1277
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld copie",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 1385
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld copie",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 1460
+        }
+      }
+    ]
+  },
+  "version": 1
+}

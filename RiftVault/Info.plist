@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>RiftCodexAPIBaseURL</key>
+	<string>https://api.riftcodex.com</string>
+	<key>RiftboundMarketAPIBaseURL</key>
+	<string>https://api.justtcg.com/v1</string>
+	<key>RiftboundMarketAPIHost</key>
+	<string></string>
+	<key>RiftboundMarketAPIKey</key>
+	<string>tcg_f74ba05984554261ac3a3fb4301bbbdc</string>
+</dict>
+</plist>

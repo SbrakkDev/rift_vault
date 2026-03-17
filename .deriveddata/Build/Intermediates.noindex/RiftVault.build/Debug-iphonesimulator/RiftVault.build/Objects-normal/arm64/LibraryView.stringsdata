@@ -1,0 +1,48 @@
+{
+  "source": "/Users/davidebusa/Documents/local/rift_vault/RiftVault/Views/LibraryView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Reset punteggio",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 25
+        }
+      },
+      {
+        "comment": "",
+        "key": "Deck attivo",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 35
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nome avversario",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 46
+        }
+      },
+      {
+        "comment": "",
+        "key": "Note rapide",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 55
+        }
+      },
+      {
+        "comment": "",
+        "key": "Salva risultato",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 65
+        }
+      }
+    ]
+  },
+  "version": 1
+}
