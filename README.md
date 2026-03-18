@@ -16,23 +16,20 @@ Compila il progetto anche senza chiavi. Per il catalogo carte e le immagini usa 
 
 - `RiftCodexAPIBaseURL`: di default `https://api.riftcodex.com`.
 
-Per i prezzi live invece puoi ancora configurare un provider separato:
+Per i prezzi live invece l'app puo leggere uno snapshot pubblico separato:
 
-- `RiftboundMarketAPIBaseURL`: base URL del provider prezzi.
-- `RiftboundMarketAPIKey`: chiave del provider prezzi.
-- `RiftboundMarketAPIHost`: eventuale header host RapidAPI.
+- `RiftVaultPriceServiceBaseURL`: base URL del Price Service pubblico, ad esempio la root GitHub Pages del progetto.
 
 ## Note integrazione
 
 - Le immagini e le informazioni carta arrivano da RiftCodex tramite `GET /cards`, senza richiedere auth.
-- Il provider market è volutamente configurabile: la UI usa quote demo finché non inserisci un endpoint live compatibile.
+- Il market non usa piu API key lato app: legge prezzi gia sincronizzati dal Price Service pubblico.
 
 ## Price Service
 
 Dentro [price_service](/Users/davidebusa/Documents/local/rift_vault/price_service) trovi il backend/sync giornaliero per i prezzi:
 
 - scarica catalogo da RiftCodex
-- scarica prezzi da JustTCG
-- converte i valori in EUR
+- scarica prezzi da CardTrader
 - genera una API statica JSON pronta per l'app
 - puo essere pubblicata gratis con GitHub Actions + GitHub Pages

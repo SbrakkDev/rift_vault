@@ -33,7 +33,7 @@ jobs:
       - name: Build static API snapshot
         working-directory: price_service
         env:
-          JUSTTCG_API_KEY: ${{ secrets.JUSTTCG_API_KEY }}
+          CARDTRADER_BEARER_TOKEN: ${{ secrets.CARDTRADER_BEARER_TOKEN }}
         run: node scripts/sync-prices.mjs
 
       - name: Setup GitHub Pages

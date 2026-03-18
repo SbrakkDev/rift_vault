@@ -11,18 +11,16 @@ const cardsRoot = path.join(apiRoot, "cards");
 const setsRoot = path.join(apiRoot, "sets");
 
 const PAGE_SIZE = 50;
-const JUSTTCG_BATCH_LIMIT = 20;
-const JUSTTCG_DELAY_MS = 7000;
+const CARDTRADER_DELAY_MS = 1200;
 
 const config = {
   riftCodexBaseURL: process.env.RIFTCODEX_API_BASE_URL || "https://api.riftcodex.com",
-  justTCGBaseURL: process.env.JUSTTCG_API_BASE_URL || "https://api.justtcg.com/v1",
-  frankfurterBaseURL: process.env.FRANKFURTER_API_BASE_URL || "https://api.frankfurter.dev/v1",
-  justTCGAPIKey: process.env.JUSTTCG_API_KEY || "",
+  cardTraderBaseURL: process.env.CARDTRADER_API_BASE_URL || "https://api.cardtrader.com/api/v2",
+  cardTraderBearerToken: process.env.CARDTRADER_BEARER_TOKEN || "",
 };
 
-if (!config.justTCGAPIKey) {
-  console.error("Missing JUSTTCG_API_KEY. Export the key before running the sync.");
+if (!config.cardTraderBearerToken) {
+  console.error("Missing CARDTRADER_BEARER_TOKEN. Export the token before running the sync.");
   process.exit(1);
 }
 
@@ -40,10 +38,7 @@ async function main() {
   const catalog = await fetchCatalog();
   console.log(`Catalog loaded: ${catalog.length} cards.`);
 
-  const usdToEUR = await fetchUSDtoEURRate();
-  console.log(`USD -> EUR rate: ${usdToEUR}`);
-
-  const quotesByTCGPlayerID = await fetchQuotesByTCGPlayerID(catalog, usdToEUR);
+  const quotesByTCGPlayerID = await fetchCardTraderQuotesByTCGPlayerID(catalog);
   console.log(`Quotes loaded: ${quotesByTCGPlayerID.size} priced cards.`);
 
   const cards = catalog.map((card) => {
@@ -168,124 +163,198 @@ function compareCards(lhs, rhs) {
   return lhs.name.localeCompare(rhs.name);
 }
 
-async function fetchUSDtoEURRate() {
-  const url = `${config.frankfurterBaseURL}/latest?base=USD&symbols=EUR`;
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Frankfurter exchange rate request failed with HTTP ${response.status}.`);
-  }
+async function fetchCardTraderQuotesByTCGPlayerID(cards) {
+  const eligibleTCGPlayerIDs = new Set(
+    cards.map((card) => card.tcgplayerId).filter(Boolean)
+  );
 
-  const payload = await response.json();
-  const rate = payload?.rates?.EUR;
-  if (typeof rate !== "number" || Number.isNaN(rate)) {
-    throw new Error("Frankfurter did not return a valid EUR exchange rate.");
-  }
+  const game = await fetchCardTraderGame();
+  console.log(`CardTrader game: ${game.name} (#${game.id}).`);
 
-  return rate;
-}
+  const expansions = await fetchCardTraderExpansions(game.id);
+  console.log(`CardTrader expansions loaded: ${expansions.length}.`);
 
-async function fetchQuotesByTCGPlayerID(cards, usdToEUR) {
-  const eligibleCards = cards.filter((card) => card.tcgplayerId);
-  const chunks = chunk(eligibleCards, JUSTTCG_BATCH_LIMIT);
   const quotes = new Map();
 
-  for (let index = 0; index < chunks.length; index += 1) {
-    const currentChunk = chunks[index];
-    const batchQuotes = await fetchJustTCGBatch(currentChunk, usdToEUR);
+  for (const expansion of expansions) {
+    const blueprints = await fetchBlueprintsForExpansion(expansion.id);
+    const tcgplayerToBlueprint = new Map();
 
-    for (const [tcgplayerId, quote] of batchQuotes.entries()) {
-      quotes.set(tcgplayerId, quote);
+    for (const blueprint of blueprints) {
+      const tcgplayerId = valueOrNull(blueprint?.tcg_player_id);
+      const blueprintID = numberOrNull(blueprint?.id);
+      if (!tcgplayerId || blueprintID === null) {
+        continue;
+      }
+      if (!eligibleTCGPlayerIDs.has(tcgplayerId)) {
+        continue;
+      }
+      tcgplayerToBlueprint.set(String(blueprintID), tcgplayerId);
     }
 
-    if (index < chunks.length - 1) {
-      await sleep(JUSTTCG_DELAY_MS);
+    if (tcgplayerToBlueprint.size === 0) {
+      continue;
     }
+
+    const productsByBlueprint = await fetchMarketplaceProductsForExpansion(expansion.id);
+    let pricedInExpansion = 0;
+
+    for (const [blueprintID, tcgplayerId] of tcgplayerToBlueprint.entries()) {
+      const products = Array.isArray(productsByBlueprint[blueprintID]) ? productsByBlueprint[blueprintID] : [];
+      const selected = selectCardTraderProduct(products);
+      if (!selected) {
+        continue;
+      }
+
+      quotes.set(tcgplayerId, buildCardTraderQuote(selected));
+      pricedInExpansion += 1;
+    }
+
+    console.log(`CardTrader priced ${pricedInExpansion} cards for expansion ${expansion.name}.`);
+    await sleep(CARDTRADER_DELAY_MS);
   }
 
   return quotes;
 }
 
-async function fetchJustTCGBatch(cards, usdToEUR) {
-  const response = await fetch(`${config.justTCGBaseURL}/cards`, {
-    method: "POST",
+async function fetchCardTraderGame() {
+  const games = await cardTraderGET("/games");
+  const list = Array.isArray(games) ? games : [];
+  const game = list.find((entry) => normalizeComparableText(entry?.name).includes("riftbound"));
+
+  if (!game?.id) {
+    throw new Error("CardTrader game lookup failed: Riftbound was not found.");
+  }
+
+  return {
+    id: Number(game.id),
+    name: String(game.name),
+  };
+}
+
+async function fetchCardTraderExpansions(gameID) {
+  const expansions = await cardTraderGET("/expansions");
+  const list = Array.isArray(expansions) ? expansions : [];
+
+  return list
+    .filter((entry) => Number(entry?.game_id) === Number(gameID))
+    .map((entry) => ({
+      id: Number(entry.id),
+      name: String(entry.name ?? "Unknown Expansion"),
+    }))
+    .sort((lhs, rhs) => lhs.name.localeCompare(rhs.name));
+}
+
+async function fetchBlueprintsForExpansion(expansionID) {
+  return cardTraderGET(`/blueprints/export?expansion_id=${encodeURIComponent(expansionID)}`);
+}
+
+async function fetchMarketplaceProductsForExpansion(expansionID) {
+  return cardTraderGET(`/marketplace/products?expansion_id=${encodeURIComponent(expansionID)}&language=en`);
+}
+
+async function cardTraderGET(pathname) {
+  const url = pathname.startsWith("http") ? pathname : `${config.cardTraderBaseURL}${pathname}`;
+  const response = await fetch(url, {
     headers: {
-      "Content-Type": "application/json",
-      "X-API-Key": config.justTCGAPIKey,
+      Authorization: `Bearer ${config.cardTraderBearerToken}`,
+      Accept: "application/json",
     },
-    body: JSON.stringify(
-      cards
-        .filter((card) => card.tcgplayerId)
-        .map((card) => ({
-          tcgplayerId: card.tcgplayerId,
-          condition: "NM",
-          printing: "Normal",
-        }))
-    ),
   });
 
   if (!response.ok) {
     const body = await response.text();
-    throw new Error(`JustTCG batch failed with HTTP ${response.status}: ${body}`);
+    throw new Error(`CardTrader request failed with HTTP ${response.status}: ${body}`);
   }
 
-  const payload = await response.json();
-  const results = Array.isArray(payload?.data) ? payload.data : [];
-  const quotes = new Map();
-
-  for (const result of results) {
-    const tcgplayerId = valueOrNull(result?.tcgplayerId);
-    if (!tcgplayerId) {
-      continue;
-    }
-
-    const variants = Array.isArray(result?.variants) ? result.variants : [];
-    const variant = selectVariant(variants);
-    if (!variant || typeof variant.price !== "number") {
-      continue;
-    }
-
-    const priceEUR = roundMoney(variant.price * usdToEUR);
-    const deltaEUR = typeof variant.priceChange24hr === "number"
-      ? roundMoney(variant.priceChange24hr * usdToEUR)
-      : null;
-
-    quotes.set(tcgplayerId, {
-      provider: "JustTCG",
-      currency: "EUR",
-      amount: priceEUR,
-      originalCurrency: "USD",
-      originalAmount: roundMoney(variant.price),
-      delta24h: deltaEUR,
-      sourceUpdatedAt: typeof variant.lastUpdated === "number"
-        ? new Date(variant.lastUpdated * 1000).toISOString()
-        : null,
-      syncedAt: new Date().toISOString(),
-    });
-  }
-
-  return quotes;
+  return response.json();
 }
 
-function selectVariant(variants) {
-  const pricedVariants = variants.filter((variant) => typeof variant?.price === "number" && variant.price > 0);
-  if (pricedVariants.length === 0) {
+function selectCardTraderProduct(products) {
+  const candidates = products
+    .filter((product) => isAvailableCardTraderProduct(product))
+    .map((product) => ({
+      product,
+      priceCents: extractCardTraderPriceCents(product),
+      conditionRank: cardTraderConditionRank(product),
+    }))
+    .filter((entry) => Number.isFinite(entry.priceCents) && entry.priceCents > 0);
+
+  if (candidates.length === 0) {
     return null;
   }
 
-  return (
-    pricedVariants.find((variant) => isNearMint(variant) && isNormalPrinting(variant)) ||
-    pricedVariants.find((variant) => isNearMint(variant)) ||
-    pricedVariants.find((variant) => isNormalPrinting(variant)) ||
-    pricedVariants[0]
+  candidates.sort((lhs, rhs) => {
+    if (lhs.conditionRank !== rhs.conditionRank) {
+      return lhs.conditionRank - rhs.conditionRank;
+    }
+    return lhs.priceCents - rhs.priceCents;
+  });
+
+  return candidates[0].product;
+}
+
+function isAvailableCardTraderProduct(product) {
+  const quantity = Number(product?.quantity ?? 0);
+  const graded = Boolean(product?.graded);
+  const onVacation = Boolean(product?.seller?.vacation_mode ?? product?.seller?.on_vacation ?? false);
+
+  return quantity > 0 && !graded && !onVacation;
+}
+
+function extractCardTraderPriceCents(product) {
+  const directPrice = numberOrNull(product?.price_cents);
+  if (directPrice !== null) {
+    return directPrice;
+  }
+
+  const nestedPrice = numberOrNull(product?.price?.cents);
+  if (nestedPrice !== null) {
+    return nestedPrice;
+  }
+
+  const amount = numberOrNull(product?.price?.amount);
+  if (amount !== null) {
+    return Math.round(amount * 100);
+  }
+
+  return null;
+}
+
+function cardTraderConditionRank(product) {
+  const raw = normalizeComparableText(
+    product?.properties_hash?.condition ||
+    product?.condition ||
+    product?.bundle?.properties_hash?.condition
   );
+
+  if (raw.includes("near mint")) return 0;
+  if (raw.includes("excellent")) return 1;
+  if (raw.includes("good")) return 2;
+  if (raw.includes("light played")) return 3;
+  if (raw.includes("played")) return 4;
+  if (raw.includes("poor")) return 5;
+  return 9;
 }
 
-function isNearMint(variant) {
-  return String(variant?.condition ?? "").toLowerCase().includes("near mint");
-}
+function buildCardTraderQuote(product) {
+  const priceCents = extractCardTraderPriceCents(product);
+  const amount = roundMoney(priceCents / 100);
+  const currency = String(
+    product?.price_currency ||
+    product?.price?.currency ||
+    "EUR"
+  ).toUpperCase();
+  const updatedAt = valueOrNull(product?.updated_at) ?? new Date().toISOString();
 
-function isNormalPrinting(variant) {
-  return String(variant?.printing ?? "").toLowerCase().includes("normal");
+  return {
+    provider: "CardTrader",
+    currency,
+    amount,
+    delta24h: null,
+    sourceUpdatedAt: updatedAt,
+    syncedAt: new Date().toISOString(),
+  };
 }
 
 function buildMeta(cards, startedAt, generatedAt) {
@@ -297,11 +366,10 @@ function buildMeta(cards, startedAt, generatedAt) {
     generatedAt,
     syncStartedAt: startedAt,
     currency: "EUR",
-    provider: "JustTCG",
+    provider: "CardTrader",
     sources: {
       catalog: "RiftCodex",
-      prices: "JustTCG",
-      fx: "Frankfurter",
+      prices: "CardTrader",
     },
     counts: {
       cards: cards.length,
@@ -364,14 +432,6 @@ async function writeJSON(filePath, payload) {
   await writeFile(filePath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
 }
 
-function chunk(items, size) {
-  const chunks = [];
-  for (let index = 0; index < items.length; index += size) {
-    chunks.push(items.slice(index, index + size));
-  }
-  return chunks;
-}
-
 function sleep(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
@@ -403,4 +463,13 @@ function numberOrNull(value) {
     return null;
   }
   return value;
+}
+
+function normalizeComparableText(value) {
+  return String(value ?? "")
+    .normalize("NFKD")
+    .replace(/[^\w\s-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
 }
