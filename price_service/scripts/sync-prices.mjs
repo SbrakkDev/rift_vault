@@ -108,6 +108,7 @@ async function fetchCatalog() {
 }
 
 function normalizeRiftCodexCard(item) {
+  const cardID = valueOrNull(item?.riftbound_id) ?? valueOrNull(item?.id) ?? "";
   const setID = String(item?.set?.set_id ?? "").trim();
   const setName = String(item?.set?.label ?? "Unknown Set").trim();
   const publicCode = String(item?.public_code ?? "").trim();
@@ -118,7 +119,9 @@ function normalizeRiftCodexCard(item) {
     : [];
 
   return {
-    id: String(item?.id ?? "").trim(),
+    id: cardID,
+    sourceID: valueOrNull(item?.id),
+    riftboundID: valueOrNull(item?.riftbound_id),
     name: String(item?.name ?? "Unknown Card").trim(),
     publicCode,
     collectorNumber,
