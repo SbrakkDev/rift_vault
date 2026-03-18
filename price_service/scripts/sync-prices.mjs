@@ -219,8 +219,14 @@ async function fetchCardTraderQuotesByTCGPlayerID(cards) {
 
 async function fetchCardTraderGame() {
   const games = await cardTraderGET("/games");
-  const list = Array.isArray(games) ? games : [];
-  const game = list.find((entry) => normalizeComparableText(entry?.name).includes("riftbound"));
+  const list = unwrapCardTraderArray(games);
+  const game = list.find((entry) => {
+    const haystack = [
+      entry?.name,
+      entry?.display_name,
+    ].map(normalizeComparableText).join(" ");
+    return haystack.includes("riftbound");
+  });
 
   if (!game?.id) {
     throw new Error("CardTrader game lookup failed: Riftbound was not found.");
@@ -234,7 +240,7 @@ async function fetchCardTraderGame() {
 
 async function fetchCardTraderExpansions(gameID) {
   const expansions = await cardTraderGET("/expansions");
-  const list = Array.isArray(expansions) ? expansions : [];
+  const list = unwrapCardTraderArray(expansions);
 
   return list
     .filter((entry) => Number(entry?.game_id) === Number(gameID))
@@ -246,7 +252,8 @@ async function fetchCardTraderExpansions(gameID) {
 }
 
 async function fetchBlueprintsForExpansion(expansionID) {
-  return cardTraderGET(`/blueprints/export?expansion_id=${encodeURIComponent(expansionID)}`);
+  const payload = await cardTraderGET(`/blueprints/export?expansion_id=${encodeURIComponent(expansionID)}`);
+  return unwrapCardTraderArray(payload);
 }
 
 async function fetchMarketplaceProductsForExpansion(expansionID) {
@@ -472,4 +479,16 @@ function normalizeComparableText(value) {
     .replace(/\s+/g, " ")
     .trim()
     .toLowerCase();
+}
+
+function unwrapCardTraderArray(payload) {
+  if (Array.isArray(payload)) {
+    return payload;
+  }
+
+  if (Array.isArray(payload?.array)) {
+    return payload.array;
+  }
+
+  return [];
 }
