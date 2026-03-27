@@ -1,6 +1,19 @@
-# Rift Vault
+# RuneShelf
 
 Companion iPhone per giocatori di Riftbound costruito in SwiftUI.
+
+## Struttura progetto
+
+- `app/`
+  - progetto iOS `RuneShelf`
+- `web/`
+  - webapp `RuneShelf` in `React + TypeScript + Vite`
+- `supabase/`
+  - schema e setup cloud
+- `price_service/`
+  - sync prezzi e output pubblico
+- `scripts/`
+  - utility locali
 
 ## Include
 
@@ -18,7 +31,7 @@ Compila il progetto anche senza chiavi. Per il catalogo carte e le immagini usa 
 
 Per i prezzi live invece l'app puo leggere uno snapshot pubblico separato:
 
-- `RiftVaultPriceServiceBaseURL`: base URL del Price Service pubblico, ad esempio la root GitHub Pages del progetto.
+- `RuneShelfPriceServiceBaseURL`: base URL del Price Service pubblico, ad esempio la root GitHub Pages del progetto.
 
 ## Note integrazione
 
@@ -33,3 +46,64 @@ Dentro [price_service](/Users/davidebusa/Documents/local/rift_vault/price_servic
 - scarica prezzi da CardTrader
 - genera una API statica JSON pronta per l'app
 - puo essere pubblicata gratis con GitHub Actions + GitHub Pages
+
+## Cloud Sync
+
+Per login e salvataggio cloud di:
+
+- binder personale
+- deck creati
+- match e statistiche
+
+la base consigliata e Supabase. Ho gia preparato uno starter in [supabase](/Users/davidebusa/Documents/local/rift_vault/supabase):
+
+- [schema.sql](/Users/davidebusa/Documents/local/rift_vault/supabase/schema.sql)
+- [README.md](/Users/davidebusa/Documents/local/rift_vault/supabase/README.md)
+
+Questa scelta resta economica anche per il futuro Android, perche il backend e unico e non dipende da servizi solo Apple.
+
+## Progetto iOS
+
+Apri il progetto da:
+
+- [RuneShelf.xcodeproj](/Users/davidebusa/Documents/local/rift_vault/app/RuneShelf.xcodeproj)
+
+## Progetto Web
+
+La webapp si trova in:
+
+- [web](/Users/davidebusa/Documents/local/rift_vault/web)
+
+Per avviarla:
+
+```bash
+cd /Users/davidebusa/Documents/local/rift_vault/web
+npm install
+npm run dev
+```
+
+## Privacy Policy su GitHub Pages
+
+La strada piu semplice per pubblicare la privacy policy per App Store Connect e usare:
+
+- branch: `main`
+- cartella: `docs`
+
+File pronti:
+
+- [docs/index.html](/Users/davidebusa/Documents/local/rift_vault/docs/index.html)
+- [docs/privacy-policy.html](/Users/davidebusa/Documents/local/rift_vault/docs/privacy-policy.html)
+
+Configurazione GitHub:
+
+1. vai nel repository su GitHub
+2. apri `Settings`
+3. apri `Pages`
+4. in `Build and deployment` scegli `Deploy from a branch`
+5. seleziona:
+   - branch: `main`
+   - folder: `/docs`
+
+L'URL finale sara del tipo:
+
+- `https://TUO-USERNAME.github.io/NOME-REPO/privacy-policy.html`
