@@ -167,7 +167,7 @@
         "key": "Filtri",
         "location": {
           "startingColumn": 30,
-          "startingLine": 1099
+          "startingLine": 1133
         }
       },
       {
@@ -175,7 +175,7 @@
         "key": "Ordine",
         "location": {
           "startingColumn": 38,
-          "startingLine": 999
+          "startingLine": 1033
         }
       },
       {
@@ -183,7 +183,7 @@
         "key": "Ordine",
         "location": {
           "startingColumn": 40,
-          "startingLine": 1003
+          "startingLine": 1037
         }
       },
       {
@@ -191,7 +191,7 @@
         "key": "Tipi carta",
         "location": {
           "startingColumn": 42,
-          "startingLine": 1015
+          "startingLine": 1049
         }
       },
       {
@@ -199,7 +199,7 @@
         "key": "Tutti",
         "location": {
           "startingColumn": 44,
-          "startingLine": 1019
+          "startingLine": 1053
         }
       },
       {
@@ -207,7 +207,7 @@
         "key": "Set",
         "location": {
           "startingColumn": 42,
-          "startingLine": 1040
+          "startingLine": 1074
         }
       },
       {
@@ -215,7 +215,7 @@
         "key": "Tutti",
         "location": {
           "startingColumn": 44,
-          "startingLine": 1044
+          "startingLine": 1078
         }
       },
       {
@@ -223,7 +223,7 @@
         "key": "Rune",
         "location": {
           "startingColumn": 42,
-          "startingLine": 1065
+          "startingLine": 1099
         }
       },
       {
@@ -231,7 +231,7 @@
         "key": "Default legenda",
         "location": {
           "startingColumn": 44,
-          "startingLine": 1069
+          "startingLine": 1103
         }
       },
       {
@@ -239,7 +239,7 @@
         "key": "Chiudi",
         "location": {
           "startingColumn": 28,
-          "startingLine": 1094
+          "startingLine": 1128
         }
       },
       {
@@ -247,7 +247,7 @@
         "key": "Curva costi",
         "location": {
           "startingColumn": 18,
-          "startingLine": 1277
+          "startingLine": 1311
         }
       },
       {
@@ -255,7 +255,7 @@
         "key": "%lld copie",
         "location": {
           "startingColumn": 22,
-          "startingLine": 1385
+          "startingLine": 1419
         }
       },
       {
@@ -263,7 +263,7 @@
         "key": "%lld copie",
         "location": {
           "startingColumn": 22,
-          "startingLine": 1460
+          "startingLine": 1494
         }
       }
     ]

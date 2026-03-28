@@ -4,42 +4,34 @@
     "Localizable": [
       {
         "comment": "",
-        "key": "Reset punteggio",
+        "key": "Match",
         "location": {
-          "startingColumn": 24,
-          "startingLine": 25
+          "startingColumn": 22,
+          "startingLine": 67
         }
       },
       {
         "comment": "",
-        "key": "Deck attivo",
+        "key": "BO3",
         "location": {
-          "startingColumn": 24,
-          "startingLine": 35
+          "startingColumn": 22,
+          "startingLine": 96
         }
       },
       {
         "comment": "",
-        "key": "Nome avversario",
+        "key": "%lld",
         "location": {
-          "startingColumn": 27,
-          "startingLine": 46
+          "startingColumn": 30,
+          "startingLine": 218
         }
       },
       {
         "comment": "",
-        "key": "Note rapide",
+        "key": "Avvia timer",
         "location": {
-          "startingColumn": 27,
-          "startingLine": 55
-        }
-      },
-      {
-        "comment": "",
-        "key": "Salva risultato",
-        "location": {
-          "startingColumn": 24,
-          "startingLine": 65
+          "startingColumn": 26,
+          "startingLine": 282
         }
       }
     ]

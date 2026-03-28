@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Resources/Fonts/Sora-wght.ttf</string>
+	</array>
+	<key>RiftCodexAPIBaseURL</key>
+	<string>https://api.riftcodex.com</string>
+	<key>SupabaseAnonKey</key>
+	<string>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4dWN4enVqaXh6cmd2Z2xxcWFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5MjAzNzksImV4cCI6MjA4OTQ5NjM3OX0.RABDpNOLX8_123aLl3fw2WHRvprCFJ8cBKvgXH2yeZM</string>
+	<key>SupabaseProjectURL</key>
+	<string>https://lxucxzujixzrgvglqqah.supabase.co</string>
+	<key>RuneShelfPriceServiceBaseURL</key>
+	<string>https://sbrakkdev.github.io/rift_vault</string>
+</dict>
+</plist>

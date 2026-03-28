@@ -1,0 +1,112 @@
+{
+  "source": "/Users/davidebusa/Documents/local/rift_vault/RiftVault/Views/AuthenticationView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Rift Vault",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 16
+        }
+      },
+      {
+        "comment": "",
+        "key": "Accedi con email per sincronizzare binder, deck e statistiche tra i tuoi dispositivi. Ogni account e' univoco per email.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 20
+        }
+      },
+      {
+        "comment": "",
+        "key": "Accesso",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 27
+        }
+      },
+      {
+        "comment": "",
+        "key": "Codice inviato a %@",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 70
+        }
+      },
+      {
+        "comment": "",
+        "key": "Email",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 32
+        }
+      },
+      {
+        "comment": "",
+        "key": "tuo@email.com",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 36
+        }
+      },
+      {
+        "comment": "",
+        "key": "Codice",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 51
+        }
+      },
+      {
+        "comment": "",
+        "key": "Inserisci il codice ricevuto",
+        "location": {
+          "startingColumn": 47,
+          "startingLine": 55
+        }
+      },
+      {
+        "comment": "",
+        "key": "Invia codice",
+        "location": {
+          "startingColumn": 50,
+          "startingLine": 90
+        }
+      },
+      {
+        "comment": "",
+        "key": "Verifica codice",
+        "location": {
+          "startingColumn": 50,
+          "startingLine": 112
+        }
+      },
+      {
+        "comment": "",
+        "key": "Invia di nuovo",
+        "location": {
+          "startingColumn": 50,
+          "startingLine": 127
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cambia email",
+        "location": {
+          "startingColumn": 50,
+          "startingLine": 138
+        }
+      },
+      {
+        "comment": "",
+        "key": "Per usare il codice email in Supabase, il template email deve inviare il token numerico invece del solo magic link.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 151
+        }
+      }
+    ]
+  },
+  "version": 1
+}

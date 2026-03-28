@@ -5,6 +5,91 @@
 	<key>logFormatVersion</key>
 	<integer>11</integer>
 	<key>logs</key>
-	<dict/>
+	<dict>
+		<key>A386484E-6D5C-490F-85BB-492155149133</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>A386484E-6D5C-490F-85BB-492155149133.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>0</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>12</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>RiftVault project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>RiftVault</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building project RiftVault with scheme RiftVault and configuration Debug</string>
+			<key>timeStartedRecording</key>
+			<real>795629956.92784798</real>
+			<key>timeStoppedRecording</key>
+			<real>795629964.735762</real>
+			<key>title</key>
+			<string>Building project RiftVault with scheme RiftVault and configuration Debug</string>
+			<key>uniqueIdentifier</key>
+			<string>A386484E-6D5C-490F-85BB-492155149133</string>
+		</dict>
+		<key>CFDA18E3-80C2-47DB-A316-E4A94777DAF5</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>CFDA18E3-80C2-47DB-A316-E4A94777DAF5.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>0</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>12</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>RiftVault project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>RiftVault</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building project RiftVault with scheme RiftVault and configuration Debug</string>
+			<key>timeStartedRecording</key>
+			<real>795628473.63364398</real>
+			<key>timeStoppedRecording</key>
+			<real>795628482.22220695</real>
+			<key>title</key>
+			<string>Building project RiftVault with scheme RiftVault and configuration Debug</string>
+			<key>uniqueIdentifier</key>
+			<string>CFDA18E3-80C2-47DB-A316-E4A94777DAF5</string>
+		</dict>
+	</dict>
 </dict>
 </plist>

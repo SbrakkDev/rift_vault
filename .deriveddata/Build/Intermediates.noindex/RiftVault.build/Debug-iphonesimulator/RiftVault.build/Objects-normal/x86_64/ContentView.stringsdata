@@ -7,7 +7,7 @@
         "key": "Binder",
         "location": {
           "startingColumn": 23,
-          "startingLine": 12
+          "startingLine": 41
         }
       },
       {
@@ -15,7 +15,7 @@
         "key": "Deck",
         "location": {
           "startingColumn": 23,
-          "startingLine": 19
+          "startingLine": 48
         }
       },
       {
@@ -23,7 +23,7 @@
         "key": "Companion",
         "location": {
           "startingColumn": 23,
-          "startingLine": 26
+          "startingLine": 55
         }
       },
       {
@@ -31,15 +31,15 @@
         "key": "Stats",
         "location": {
           "startingColumn": 23,
-          "startingLine": 33
+          "startingLine": 62
         }
       },
       {
         "comment": "",
-        "key": "Market",
+        "key": "Friends",
         "location": {
           "startingColumn": 23,
-          "startingLine": 40
+          "startingLine": 69
         }
       }
     ]

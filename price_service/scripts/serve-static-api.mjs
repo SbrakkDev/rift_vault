@@ -48,5 +48,5 @@ const server = http.createServer((request, response) => {
 });
 
 server.listen(port, () => {
-  console.log(`Rift Vault static API available on http://localhost:${port}`);
+  console.log(`RuneShelf static API available on http://localhost:${port}`);
 });

@@ -1,0 +1,503 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap");
+
+:root {
+  font-family: "Sora", sans-serif;
+  color: #f4f7ff;
+  background:
+    radial-gradient(circle at top, rgba(74, 193, 233, 0.14), transparent 26%),
+    #0a1022;
+  color-scheme: dark;
+  --bg: #0a1022;
+  --panel: #1f2644;
+  --panel-soft: rgba(35, 42, 73, 0.8);
+  --text: #f4f7ff;
+  --muted: #aab6d7;
+  --accent: #4ac1e9;
+  --outline: rgba(255, 255, 255, 0.08);
+  --chip: rgba(8, 12, 28, 0.36);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background:
+    radial-gradient(circle at top, rgba(74, 193, 233, 0.12), transparent 24%),
+    linear-gradient(180deg, #101936 0%, #090f21 100%);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+}
+
+.sidebar {
+  padding: 28px 18px;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(8, 12, 28, 0.55);
+  backdrop-filter: blur(20px);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-lockup p,
+.sidebar-card p,
+.section-subtitle,
+.friend-row p {
+  color: var(--muted);
+}
+
+.brand-mark {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  background: linear-gradient(135deg, #16947a 0%, #368bd8 100%);
+}
+
+.sidebar-nav {
+  margin-top: 24px;
+  display: grid;
+  gap: 8px;
+}
+
+.sidebar-link,
+.mobile-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  color: var(--muted);
+}
+
+.sidebar-link.active,
+.mobile-link.active {
+  background: rgba(74, 193, 233, 0.16);
+  color: white;
+}
+
+.sidebar-card,
+.panel,
+.match-panel {
+  margin-top: 24px;
+  padding: 18px;
+  background: rgba(31, 38, 68, 0.88);
+  border: 1px solid var(--outline);
+  border-radius: 24px;
+}
+
+.main-content {
+  padding: 34px;
+}
+
+.page {
+  width: min(1100px, 100%);
+  margin: 0 auto;
+}
+
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.section-header h2 {
+  font-size: clamp(2rem, 2.8vw, 3.6rem);
+  margin: 0;
+  line-height: 0.96;
+}
+
+.section-eyebrow {
+  margin: 0 0 10px;
+  color: var(--accent);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ghost-button,
+.filter-pill,
+.patreon-button {
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+  border: 1px solid var(--outline);
+  border-radius: 16px;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filter-pill.active,
+.patreon-button {
+  background: linear-gradient(135deg, #1cb39f 0%, #4ac1e9 100%);
+  color: #06111e;
+  font-weight: 700;
+}
+
+.stack {
+  display: grid;
+  gap: 18px;
+}
+
+.deck-card {
+  min-height: 214px;
+  border-radius: 30px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.deck-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.deck-card__content {
+  padding: 22px 24px;
+  display: grid;
+  align-content: start;
+  gap: 18px;
+}
+
+.deck-card__title-block h3 {
+  margin: 0;
+  font-size: clamp(2rem, 2.8vw, 3.4rem);
+  line-height: 0.98;
+}
+
+.deck-owner {
+  margin: 12px 0 0;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.deck-card__info-row,
+.deck-card__footer,
+.set-chip-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.domains-pill,
+.community-meta-pill,
+.price-pill,
+.visibility-pill,
+.set-chip,
+.binder-code,
+.friend-row,
+.timer-pill,
+.player-tag {
+  border-radius: 16px;
+}
+
+.domains-pill {
+  display: inline-flex;
+  gap: 8px;
+  padding: 8px 10px;
+  background: rgba(7, 12, 28, 0.28);
+}
+
+.domain-icon {
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  overflow: hidden;
+}
+
+.domain-icon img {
+  width: 65%;
+  height: 65%;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.set-chip {
+  padding: 9px 14px;
+  min-width: 56px;
+  text-align: center;
+  background: rgba(15, 18, 33, 0.2);
+  color: white;
+}
+
+.price-pill,
+.community-meta-pill {
+  padding: 10px 14px;
+  background: rgba(10, 14, 28, 0.22);
+}
+
+.price-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 128px;
+}
+
+.price-pill__icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: #7bf0be;
+  color: #0f2f23;
+  font-weight: 800;
+}
+
+.community-meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.visibility-pill {
+  padding: 10px 18px;
+  min-width: 84px;
+  text-align: center;
+  background: rgba(12, 16, 30, 0.25);
+}
+
+.visibility-pill.public {
+  background: #4ac1e9;
+  color: #06111e;
+  font-weight: 700;
+}
+
+.binder-card {
+  min-height: 180px;
+  border-radius: 28px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.binder-card__content {
+  position: relative;
+  z-index: 2;
+  padding: 22px 22px 24px;
+  max-width: 54%;
+}
+
+.binder-card h3 {
+  font-size: clamp(2rem, 2.8vw, 3rem);
+  line-height: 0.96;
+  margin: 10px 0 14px;
+}
+
+.binder-code {
+  display: inline-flex;
+  padding: 10px 14px;
+  background: rgba(13, 17, 30, 0.34);
+}
+
+.binder-card__art-wrap {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 54%;
+}
+
+.binder-card__art-wrap img,
+.binder-card__fade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.binder-card__art-wrap img {
+  object-fit: cover;
+  object-position: center right;
+}
+
+.binder-card__fade {
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.12) 100%);
+}
+
+.companion-hero {
+  display: grid;
+  grid-template-columns: 1fr 360px 1fr;
+  gap: 18px;
+}
+
+.companion-player {
+  min-height: 360px;
+  padding: 24px;
+  border-radius: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.companion-player.blue {
+  background: linear-gradient(135deg, #2a8fc4 0%, #365baf 100%);
+}
+
+.companion-player.orange {
+  background: linear-gradient(135deg, #d66e34 0%, #8b3cc5 100%);
+}
+
+.companion-player__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.player-tag,
+.timer-pill {
+  padding: 12px 16px;
+  background: rgba(7, 12, 28, 0.25);
+}
+
+.score {
+  font-size: clamp(4rem, 9vw, 7rem);
+  line-height: 1;
+  text-align: center;
+  margin-top: 56px;
+  font-weight: 800;
+}
+
+.round-track {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.match-actions {
+  display: grid;
+  gap: 12px;
+}
+
+.friends-layout {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 18px;
+}
+
+.friend-list {
+  display: grid;
+  gap: 10px;
+}
+
+.friend-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.mobile-topbar,
+.mobile-nav {
+  display: none;
+}
+
+@media (max-width: 980px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .mobile-topbar {
+    display: block;
+    padding: 18px 16px 0;
+  }
+
+  .brand-lockup.compact .brand-mark {
+    width: 40px;
+    height: 40px;
+    border-radius: 14px;
+  }
+
+  .main-content {
+    padding: 18px 16px 92px;
+  }
+
+  .mobile-nav {
+    position: fixed;
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    padding: 10px;
+    border-radius: 22px;
+    background: rgba(12, 17, 34, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+  }
+
+  .mobile-link {
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 8px;
+    font-size: 0.78rem;
+  }
+
+  .deck-card,
+  .friends-layout,
+  .companion-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .deck-card__image {
+    max-height: 240px;
+  }
+
+  .binder-card__content,
+  .binder-card__art-wrap {
+    width: 100%;
+    max-width: none;
+  }
+
+  .binder-card__content {
+    padding-bottom: 140px;
+  }
+
+  .binder-card__art-wrap {
+    inset: auto 0 0 0;
+    height: 58%;
+  }
+}

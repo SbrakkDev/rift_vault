@@ -75,6 +75,7 @@ Per App Store Connect e' stato aggiunto un file statico pronto per essere pubbli
 Per la pubblicazione piu semplice via GitHub Pages e' stata aggiunta anche una versione dedicata in:
 
 - `docs/privacy-policy.html`
+- `docs/support.html`
 - `docs/index.html`
 
 Configurazione consigliata GitHub Pages:
@@ -88,6 +89,7 @@ Configurazione consigliata GitHub Pages:
 In questo modo l'URL da usare in App Store Connect sara':
 
 - `https://TUO-USERNAME.github.io/NOME-REPO/privacy-policy.html`
+- `https://TUO-USERNAME.github.io/NOME-REPO/support.html`
 
 La copia in `web/public/privacy-policy.html` puo' restare come sorgente webapp, ma la strada piu veloce per l'App Store e' usare `docs/privacy-policy.html`.
 

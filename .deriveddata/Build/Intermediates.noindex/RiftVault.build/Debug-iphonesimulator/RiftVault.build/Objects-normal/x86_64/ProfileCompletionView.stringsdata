@@ -1,0 +1,72 @@
+{
+  "source": "/Users/davidebusa/Documents/local/rift_vault/RiftVault/Views/ProfileCompletionView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Completa il profilo",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 16
+        }
+      },
+      {
+        "comment": "",
+        "key": "Scegli il tuo username. Ti servira' piu avanti per community, deck condivisi e sync cloud.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 20
+        }
+      },
+      {
+        "comment": "",
+        "key": "Usa 3-20 caratteri: lettere minuscole, numeri, punto o underscore.",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 67
+        }
+      },
+      {
+        "comment": "",
+        "key": "Username",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 34
+        }
+      },
+      {
+        "comment": "",
+        "key": "es. sbrakkdev",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 38
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nome visibile (opzionale)",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 51
+        }
+      },
+      {
+        "comment": "",
+        "key": "es. Davide",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 55
+        }
+      },
+      {
+        "comment": "",
+        "key": "Salva profilo",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 85
+        }
+      }
+    ]
+  },
+  "version": 1
+}

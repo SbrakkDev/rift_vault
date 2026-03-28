@@ -1,4 +1,4 @@
-# Rift Vault Price Service
+# RuneShelf Price Service
 
 Servizio di sync giornaliero per catalogo e prezzi carte Riftbound.
 

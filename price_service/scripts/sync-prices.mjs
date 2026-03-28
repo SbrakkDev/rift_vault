@@ -32,7 +32,7 @@ main().catch((error) => {
 });
 
 async function main() {
-  console.log("Starting Rift Vault daily sync...");
+  console.log("Starting RuneShelf daily sync...");
 
   const startedAt = new Date().toISOString();
   const catalog = await fetchCatalog();
@@ -369,7 +369,7 @@ function buildMeta(cards, startedAt, generatedAt) {
   const setNames = new Set(cards.map((card) => card.set.name));
 
   return {
-    service: "Rift Vault Price Service",
+    service: "RuneShelf Price Service",
     generatedAt,
     syncStartedAt: startedAt,
     currency: "EUR",

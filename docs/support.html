@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RuneShelf Support</title>
+    <meta
+      name="description"
+      content="Support information for RuneShelf, including contact details and help topics."
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #071123;
+        --panel: rgba(18, 31, 56, 0.94);
+        --panel-border: rgba(122, 206, 234, 0.18);
+        --text: #f3f6fb;
+        --muted: #aeb8ca;
+        --accent: #59d0f4;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top right, rgba(89, 208, 244, 0.12), transparent 28%),
+          linear-gradient(180deg, #0b1730 0%, var(--bg) 100%);
+        color: var(--text);
+      }
+
+      .page {
+        width: min(920px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 48px 0 72px;
+      }
+
+      .eyebrow {
+        margin: 0 0 10px;
+        color: var(--accent);
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 3.4rem);
+        line-height: 0.98;
+      }
+
+      .subtitle {
+        margin: 14px 0 0;
+        max-width: 760px;
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.6;
+      }
+
+      .card {
+        margin-top: 24px;
+        border: 1px solid var(--panel-border);
+        border-radius: 28px;
+        background: var(--panel);
+        box-shadow: 0 22px 60px rgba(0, 0, 0, 0.28);
+        overflow: hidden;
+      }
+
+      .card-body {
+        padding: 30px 24px 32px;
+      }
+
+      section + section {
+        margin-top: 24px;
+        padding-top: 24px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      h2 {
+        margin: 0 0 12px;
+        font-size: 1.25rem;
+      }
+
+      p,
+      li {
+        color: var(--muted);
+        font-size: 1rem;
+        line-height: 1.7;
+      }
+
+      ul {
+        margin: 12px 0 0 20px;
+        padding: 0;
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      .contact-card {
+        margin-top: 18px;
+        padding: 18px 20px;
+        border-radius: 18px;
+        background: rgba(8, 19, 38, 0.45);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .contact-label {
+        margin: 0 0 6px;
+        color: var(--muted);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      .contact-link {
+        font-size: 1.05rem;
+        font-weight: 700;
+      }
+
+      @media (max-width: 640px) {
+        .page {
+          width: min(100% - 20px, 920px);
+          padding: 28px 0 48px;
+        }
+
+        .card-body {
+          padding: 24px 18px 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <p class="eyebrow">RuneShelf</p>
+      <h1>Support</h1>
+      <p class="subtitle">
+        Need help with RuneShelf? This page includes contact details and basic
+        support information for users and for App Review.
+      </p>
+
+      <article class="card">
+        <div class="card-body">
+          <section>
+            <h2>Contact support</h2>
+            <p>
+              For questions, bug reports, account issues, or support requests,
+              contact RuneShelf support by email.
+            </p>
+            <div class="contact-card">
+              <p class="contact-label">Support email</p>
+              <a class="contact-link" href="mailto:runeshelfapp@gmail.com">runeshelfapp@gmail.com</a>
+            </div>
+          </section>
+
+          <section>
+            <h2>How to request help</h2>
+            <ul>
+              <li>Describe the issue or question clearly.</li>
+              <li>Include your device model and iOS version when relevant.</li>
+              <li>Mention the app area involved, such as Binder, Deck Builder, Companion, Community, or Friends.</li>
+              <li>Add screenshots if they help explain the problem.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Privacy and account requests</h2>
+            <p>
+              If your request concerns account access, personal data, or account
+              deletion, please specify that in your email so it can be handled
+              as a privacy-related support request.
+            </p>
+            <p>
+              Privacy Policy:
+              <a href="./privacy-policy.html">RuneShelf Privacy Policy</a>
+            </p>
+          </section>
+        </div>
+      </article>
+    </main>
+  </body>
+</html>

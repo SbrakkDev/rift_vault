@@ -1,0 +1,32 @@
+{
+  "source": "/Users/davidebusa/Documents/local/rift_vault/RiftVault/Views/FriendsView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Nessun profilo trovato con questa ricerca.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 101
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cerca per username",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 52
+        }
+      },
+      {
+        "comment": "",
+        "key": "Non hai ancora amici o richieste. Cerca uno username e invia la prima richiesta.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 186
+        }
+      }
+    ]
+  },
+  "version": 1
+}
