@@ -12,6 +12,10 @@ const setsRoot = path.join(apiRoot, "sets");
 
 const PAGE_SIZE = 50;
 const CARDTRADER_DELAY_MS = 1200;
+const RIFTCODEX_HEADERS = {
+  Accept: "application/json",
+  "User-Agent": "RuneShelfPriceService/0.1 (+https://github.com/sbrakkdev/rift_vault)",
+};
 
 const config = {
   riftCodexBaseURL: process.env.RIFTCODEX_API_BASE_URL || "https://api.riftcodex.com",
@@ -78,9 +82,14 @@ async function fetchCatalog() {
     url.searchParams.set("page", String(page));
     url.searchParams.set("size", String(PAGE_SIZE));
 
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: RIFTCODEX_HEADERS,
+    });
     if (!response.ok) {
-      throw new Error(`RiftCodex catalog request failed with HTTP ${response.status}.`);
+      const body = await response.text();
+      throw new Error(
+        `RiftCodex catalog request failed with HTTP ${response.status}: ${String(body).trim().slice(0, 220)}`
+      );
     }
 
     const payload = await response.json();

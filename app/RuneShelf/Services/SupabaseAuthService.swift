@@ -43,6 +43,7 @@ enum SupabaseAuthError: LocalizedError {
     case missingPendingEmail
     case invalidCode
     case invalidUsername
+    case invalidProjectURL
     case serverMessage(String)
 
     var errorDescription: String? {
@@ -59,6 +60,8 @@ enum SupabaseAuthError: LocalizedError {
             return "Inserisci il codice ricevuto via email."
         case .invalidUsername:
             return "Scegli uno username di 3-20 caratteri usando solo lettere, numeri, punto o underscore."
+        case .invalidProjectURL:
+            return "SupabaseProjectURL non e' valido. Deve puntare al progetto Supabase e non a GitHub Pages o ad altri endpoint."
         case .serverMessage(let message):
             return message
         }
@@ -101,6 +104,11 @@ private struct SupabaseAuthErrorPayload: Decodable {
         if raw.localizedCaseInsensitiveContains("profiles_username_key") ||
             raw.localizedCaseInsensitiveContains("duplicate key value violates unique constraint") {
             return "Questo username e' gia in uso."
+        }
+
+        if raw.localizedCaseInsensitiveContains("delete_my_account") &&
+            raw.localizedCaseInsensitiveContains("function") {
+            return "La funzione Supabase per eliminare l'account non e' disponibile. Applica lo script SQL aggiornato del progetto."
         }
 
         return raw
@@ -297,6 +305,20 @@ actor SupabaseAuthService {
         return profile
     }
 
+    func deleteAccount(session: VaultAuthSession, configuration: AppConfiguration) async throws {
+        _ = try await performRequest(
+            path: "/rest/v1/rpc/delete_my_account",
+            method: "POST",
+            configuration: configuration,
+            body: [:],
+            accessToken: session.accessToken,
+            headers: [
+                "Prefer": "return=minimal"
+            ],
+            responseType: EmptyResponse.self
+        )
+    }
+
     private static func normalizeUsername(_ username: String) throws -> String {
         let normalized = username
             .trimmingCharacters(in: .whitespacesAndNewlines)
@@ -334,8 +356,12 @@ actor SupabaseAuthService {
             throw SupabaseAuthError.missingConfiguration
         }
 
+        let trimmedProjectURL = configuration.supabaseProjectURL.trimmingCharacters(in: .whitespacesAndNewlines)
         guard let baseURL = URL(string: configuration.supabaseProjectURL) else {
             throw SupabaseAuthError.missingConfiguration
+        }
+        if isClearlyWrongSupabaseURL(baseURL, rawValue: trimmedProjectURL) {
+            throw SupabaseAuthError.invalidProjectURL
         }
         guard let url = URL(string: path, relativeTo: baseURL)?.absoluteURL else {
             throw SupabaseAuthError.missingConfiguration
@@ -360,8 +386,14 @@ actor SupabaseAuthService {
         }
 
         guard (200..<300).contains(http.statusCode) else {
-            let payload = try? JSONDecoder().decode(SupabaseAuthErrorPayload.self, from: data)
-            throw SupabaseAuthError.serverMessage(payload?.resolvedMessage ?? "HTTP \(http.statusCode)")
+            throw SupabaseAuthError.serverMessage(
+                Self.resolveErrorMessage(
+                    statusCode: http.statusCode,
+                    data: data,
+                    response: http,
+                    requestURL: url
+                )
+            )
         }
 
         if Response.self == EmptyResponse.self {
@@ -373,6 +405,47 @@ actor SupabaseAuthService {
         } catch {
             throw SupabaseAuthError.invalidResponse
         }
+    }
+
+    private func isClearlyWrongSupabaseURL(_ url: URL, rawValue: String) -> Bool {
+        let host = url.host?.lowercased() ?? ""
+        let normalized = rawValue.lowercased()
+        return host.contains("github.io") ||
+        normalized.contains("github.io") ||
+        normalized.contains("/privacy-policy") ||
+        normalized.contains("/support") ||
+        normalized.contains("/api/prices.json") ||
+        normalized.contains("/api/catalog.json")
+    }
+
+    private static func resolveErrorMessage(
+        statusCode: Int,
+        data: Data,
+        response: HTTPURLResponse,
+        requestURL: URL
+    ) -> String {
+        if let payload = try? JSONDecoder().decode(SupabaseAuthErrorPayload.self, from: data),
+           let resolvedMessage = payload.resolvedMessage,
+           !resolvedMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return resolvedMessage
+        }
+
+        let contentType = response.value(forHTTPHeaderField: "Content-Type")?.lowercased() ?? ""
+        let bodyText = String(data: data, encoding: .utf8)?
+            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
+        if contentType.contains("text/html") || bodyText.lowercased().contains("<!doctype html") {
+            if requestURL.host?.lowercased().contains("github.io") == true {
+                return "L'app sta tentando il login contro GitHub Pages invece che contro Supabase. Controlla SupabaseProjectURL in Info.plist."
+            }
+            return "L'endpoint di autenticazione ha risposto con una pagina HTML invece che con l'API Supabase. Controlla SupabaseProjectURL."
+        }
+
+        if !bodyText.isEmpty {
+            return "HTTP \(statusCode): \(String(bodyText.prefix(140)))"
+        }
+
+        return "HTTP \(statusCode)"
     }
 }
 

@@ -361,6 +361,10 @@ actor RiftCodexContentService {
             .trimmingCharacters(in: .whitespacesAndNewlines),
            !text.isEmpty
         {
+            let lowercased = text.lowercased()
+            if lowercased.contains("<!doctype html") || lowercased.contains("<html") {
+                return "L'endpoint configurato ha risposto con una pagina HTML invece che con JSON."
+            }
             return String(text.prefix(180))
         }
 
@@ -616,6 +620,7 @@ final class RuneShelfStore: ObservableObject {
     @Published private(set) var isLoadingFriends = false
     @Published var isSearchingFriends = false
     @Published var isSendingFriendRequest = false
+    @Published var isDeletingAccount = false
     @Published private(set) var isLoadingCommunityDecks = false
     @Published private(set) var hasResolvedInitialAuthState = false
 
@@ -986,6 +991,41 @@ final class RuneShelfStore: ObservableObject {
     }
 
     func signOut() async {
+        await clearAuthenticatedSessionState()
+        showBanner("Hai effettuato il logout.", style: .info)
+    }
+
+    func deleteAccount() async {
+        guard !isDeletingAccount else { return }
+        guard let authSession else {
+            showBanner("Sessione non disponibile.", style: .warning)
+            return
+        }
+
+        isDeletingAccount = true
+        collectionSyncTask?.cancel()
+        deckSyncTask?.cancel()
+        matchSyncTask?.cancel()
+        defer { isDeletingAccount = false }
+
+        do {
+            try await supabaseAuthService.deleteAccount(
+                session: authSession,
+                configuration: configuration
+            )
+            await clearAuthenticatedSessionState()
+            clearLocalUserData()
+            await persistSnapshotImmediately()
+            showBanner("Account e dati associati eliminati.", style: .info)
+        } catch {
+            scheduleCollectionSync()
+            scheduleDeckSync()
+            scheduleMatchSync()
+            showBanner("Eliminazione account non riuscita: \(error.localizedDescription)", style: .warning)
+        }
+    }
+
+    private func clearAuthenticatedSessionState() async {
         authSession = nil
         authUser = nil
         profile = nil
@@ -1012,7 +1052,6 @@ final class RuneShelfStore: ObservableObject {
         pendingAuthEmail = nil
         await authSessionStore.clear()
         await profileStore.clear()
-        showBanner("Hai effettuato il logout.", style: .info)
     }
 
     func saveProfile(username: String, displayName: String?) async {
@@ -1984,6 +2023,16 @@ final class RuneShelfStore: ObservableObject {
         publicMatchHistoryByDeckID = [:]
     }
 
+    private func clearLocalUserData() {
+        collection = [:]
+        customLists = []
+        decks = []
+        matches = []
+        scoreboard = ScoreboardState()
+        publicMatchHistoryByDeckID = [:]
+        publicFavoriteCardsByUserID = [:]
+    }
+
     @discardableResult
     private func removeLegacySampleDataIfNeeded() -> Bool {
         let sampleCardIDs = Set(SampleVaultData.catalog.map(\.id))
@@ -2676,6 +2725,22 @@ final class RuneShelfStore: ObservableObject {
 
             try? await self.persistence.save(snapshot: snapshot)
         }
+    }
+
+    private func persistSnapshotImmediately() async {
+        persistTask?.cancel()
+
+        let snapshot = VaultSnapshot(
+            catalog: catalog,
+            collection: collection,
+            customLists: customLists,
+            decks: decks,
+            matches: matches,
+            quotes: quotes,
+            scoreboard: scoreboard
+        )
+
+        try? await persistence.save(snapshot: snapshot)
     }
 
     private func showBanner(_ text: String, style: BannerStyle) {

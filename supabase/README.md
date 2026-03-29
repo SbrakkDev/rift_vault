@@ -37,6 +37,18 @@ Questi restano esterni, quindi il database utente resta leggero.
    - `Project URL`
    - `anon public key`
 
+## Eliminazione account in-app
+
+Per il pulsante "Elimina account" dentro l'app, lo schema include la funzione RPC:
+
+- `public.delete_my_account()`
+
+Se il database era gia stato creato prima di questa aggiunta, esegui anche:
+
+- [account_deletion.sql](/Users/davidebusa/Documents/local/rift_vault/supabase/account_deletion.sql)
+
+La funzione elimina l'utente da `auth.users` e lascia alle foreign key `on delete cascade` la rimozione di profilo, amicizie, collezione, deck, entry e match collegati.
+
 ## Strategia consigliata
 
 - app continua a salvare anche in locale come cache/offline layer

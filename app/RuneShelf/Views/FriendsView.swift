@@ -4,6 +4,7 @@ struct FriendsView: View {
     @EnvironmentObject private var store: RuneShelfStore
 
     @State private var searchQuery = ""
+    @State private var showDeleteAccountAlert = false
 
     var body: some View {
         ScreenScaffold(
@@ -222,8 +223,59 @@ struct FriendsView: View {
                     .buttonStyle(.plain)
                 }
             }
+
+            if store.profile != nil {
+                VaultPanel {
+                    SectionHeader("Account", eyebrow: "privacy")
+
+                    VStack(alignment: .leading, spacing: 14) {
+                        Text("Puoi eliminare definitivamente il tuo account e tutti i dati collegati salvati su RuneShelf: profilo, amici, binder, deck e cronologia partite.")
+                            .font(.runeStyle(.subheadline, weight: .medium))
+                            .foregroundStyle(.white.opacity(0.76))
+
+                        Button {
+                            showDeleteAccountAlert = true
+                        } label: {
+                            HStack(spacing: 10) {
+                                if store.isDeletingAccount {
+                                    ProgressView()
+                                        .tint(.white)
+                                } else {
+                                    Image(systemName: "trash.fill")
+                                        .font(.runeStyle(.headline, weight: .black))
+                                }
+
+                                Text(store.isDeletingAccount ? "Eliminazione in corso..." : "Elimina account")
+                                    .font(.runeStyle(.headline, weight: .black))
+
+                                Spacer(minLength: 0)
+                            }
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 15)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(
+                                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                                    .fill(Color(red: 0.80, green: 0.23, blue: 0.23))
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(store.isDeletingAccount)
+                    }
+                }
+            }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .alert("Eliminare account?", isPresented: $showDeleteAccountAlert) {
+            Button("Annulla", role: .cancel) {}
+            Button("Elimina account", role: .destructive) {
+                Task {
+                    await store.deleteAccount()
+                }
+            }
+        } message: {
+            Text("Questa azione elimina definitivamente il tuo account e i dati associati. Non puo essere annullata.")
+        }
         .task {
             await store.refreshFriendsIfNeeded()
         }
