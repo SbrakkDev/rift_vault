@@ -1001,7 +1001,7 @@ struct MarketPricePill: View {
 
     @ViewBuilder
     private func languageSection(flag: String, quote: CardPriceQuote?) -> some View {
-        VStack(alignment: .leading, spacing: compact ? 4 : 6) {
+        HStack(spacing: compact ? 8 : 10) {
             Text(flag)
                 .font(.system(size: compact ? 16 : 18))
 
@@ -1010,6 +1010,8 @@ struct MarketPricePill: View {
                 .foregroundStyle(.white)
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
+
+            Spacer(minLength: 0)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, compact ? 10 : 12)
