@@ -36,6 +36,11 @@ jobs:
           CARDTRADER_BEARER_TOKEN: ${{ secrets.CARDTRADER_BEARER_TOKEN }}
         run: node scripts/sync-prices.mjs
 
+      - name: Bundle support pages
+        run: |
+          cp docs/support.html price_service/public/support.html
+          cp docs/privacy-policy.html price_service/public/privacy-policy.html
+
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
 
