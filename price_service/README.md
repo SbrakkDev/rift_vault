@@ -42,6 +42,18 @@ Poi apri:
 - `public/api/cards/<card-id>.json`
 - `public/api/sets/<set-slug>.json`
 
+Lo snapshot salva:
+
+- `price`
+  - compatibilita con l'app attuale
+  - corrisponde al minimo assoluto trovato in inglese
+- `languagePrices.english`
+  - minimo assoluto inglese
+- `languagePrices.chinese`
+  - minimo assoluto cinese
+
+In `prices.json` resta presente anche `prices`, mentre i prezzi separati per lingua sono esposti in `languagePrices`.
+
 ## Variabili ambiente
 
 - `CARDTRADER_BEARER_TOKEN`: obbligatoria

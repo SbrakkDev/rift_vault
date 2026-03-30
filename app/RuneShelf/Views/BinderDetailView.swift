@@ -847,7 +847,7 @@ private struct BinderSetDetailView: View {
     private func binderListRow(_ card: RiftCard) -> some View {
         let owned = store.quantityOwned(for: card.id)
         let wanted = store.isWanted(card.id)
-        let quote = store.quote(for: card)
+        let quotes = store.quotes(for: card)
 
         return HStack(spacing: 14) {
             Button {
@@ -902,13 +902,8 @@ private struct BinderSetDetailView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            Text(priceText(for: quote))
-                .font(.runeStyle(.title2, weight: .black))
-                .foregroundStyle(.white)
-                .lineLimit(1)
-                .minimumScaleFactor(0.55)
-                .multilineTextAlignment(.trailing)
-                .frame(width: 72, alignment: .trailing)
+            MarketPricePill(quotes: quotes, compact: true)
+                .frame(width: 168)
         }
         .padding(12)
         .background(
@@ -929,11 +924,6 @@ private struct BinderSetDetailView: View {
                 .background(Circle().fill(VaultPalette.panelSoft))
         }
         .buttonStyle(.plain)
-    }
-
-    private func priceText(for quote: CardPriceQuote?) -> String {
-        guard let quote else { return "N/D" }
-        return vaultFormattedPrice(amount: quote.amount, currencyCode: quote.currency)
     }
 }
 
@@ -1006,21 +996,8 @@ private struct BinderCardFocusView: View {
                         CardCustomListsMenuButton(card: card, compact: false)
                     }
 
-                    Text(priceText)
-                        .font(.rune(34, weight: .black))
-                        .foregroundStyle(.white)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.7)
-                        .padding(.horizontal, 24)
-                        .padding(.vertical, 16)
-                        .background(
-                            Capsule()
-                                .fill(VaultPalette.panelSoft.opacity(0.96))
-                                .overlay(
-                                    Capsule()
-                                        .stroke(Color.white.opacity(0.08), lineWidth: 1)
-                                )
-                        )
+                    MarketPricePill(quotes: quotes)
+                        .frame(maxWidth: .infinity)
 
                     BinderCardDetailsPanel(card: card)
                 }
@@ -1032,8 +1009,8 @@ private struct BinderCardFocusView: View {
         }
     }
 
-    private var quote: CardPriceQuote? {
-        store.quote(for: card)
+    private var quotes: CardLanguageQuotes {
+        store.quotes(for: card)
     }
 
     private var owned: Int {
@@ -1042,11 +1019,6 @@ private struct BinderCardFocusView: View {
 
     private var wanted: Bool {
         store.isWanted(card.id)
-    }
-
-    private var priceText: String {
-        guard let quote else { return "Prezzo non disponibile" }
-        return vaultFormattedPrice(amount: quote.amount, currencyCode: quote.currency)
     }
 
     private func focusActionButton(symbol: String, action: @escaping () -> Void) -> some View {

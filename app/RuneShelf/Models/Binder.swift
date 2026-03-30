@@ -519,6 +519,11 @@ struct CardPriceQuote: Identifiable, Codable, Hashable {
     var productURL: URL?
 }
 
+struct CardLanguageQuotes: Codable, Hashable {
+    var english: CardPriceQuote?
+    var chinese: CardPriceQuote?
+}
+
 struct ScoreboardState: Codable, Hashable {
     var leftName: String = "Player 1"
     var rightName: String = "Player 2"
@@ -714,6 +719,7 @@ struct VaultSnapshot: Codable {
     var decks: [Deck]
     var matches: [MatchRecord]
     var quotes: [String: CardPriceQuote]
+    var languageQuotes: [String: CardLanguageQuotes]
     var scoreboard: ScoreboardState
 
     init(
@@ -723,6 +729,7 @@ struct VaultSnapshot: Codable {
         decks: [Deck],
         matches: [MatchRecord],
         quotes: [String: CardPriceQuote],
+        languageQuotes: [String: CardLanguageQuotes] = [:],
         scoreboard: ScoreboardState
     ) {
         self.catalog = catalog
@@ -731,6 +738,7 @@ struct VaultSnapshot: Codable {
         self.decks = decks
         self.matches = matches
         self.quotes = quotes
+        self.languageQuotes = languageQuotes
         self.scoreboard = scoreboard
     }
 
@@ -741,6 +749,7 @@ struct VaultSnapshot: Codable {
         case decks
         case matches
         case quotes
+        case languageQuotes
         case scoreboard
     }
 
@@ -752,6 +761,7 @@ struct VaultSnapshot: Codable {
         decks = try container.decodeIfPresent([Deck].self, forKey: .decks) ?? []
         matches = try container.decodeIfPresent([MatchRecord].self, forKey: .matches) ?? []
         quotes = try container.decodeIfPresent([String: CardPriceQuote].self, forKey: .quotes) ?? [:]
+        languageQuotes = try container.decodeIfPresent([String: CardLanguageQuotes].self, forKey: .languageQuotes) ?? [:]
         scoreboard = try container.decodeIfPresent(ScoreboardState.self, forKey: .scoreboard) ?? ScoreboardState()
     }
 }

@@ -989,31 +989,43 @@ struct ScoreDial: View {
 }
 
 struct MarketPricePill: View {
-    let quote: CardPriceQuote?
+    let quotes: CardLanguageQuotes
+    var compact = false
 
     var body: some View {
-        VStack(alignment: .trailing, spacing: 4) {
-            Text(priceText)
-                .font(.runeStyle(.headline, weight: .bold))
-            Text(deltaText)
-                .font(.runeStyle(.caption, weight: .semibold))
-                .foregroundStyle(deltaColor)
+        HStack(spacing: compact ? 8 : 10) {
+            languageSection(flag: "🇬🇧", quote: quotes.english)
+            languageSection(flag: "🇨🇳", quote: quotes.chinese)
         }
     }
 
-    private var priceText: String {
+    @ViewBuilder
+    private func languageSection(flag: String, quote: CardPriceQuote?) -> some View {
+        VStack(alignment: .leading, spacing: compact ? 4 : 6) {
+            Text(flag)
+                .font(.system(size: compact ? 16 : 18))
+
+            Text(priceText(for: quote))
+                .font(compact ? .runeStyle(.caption, weight: .black) : .runeStyle(.headline, weight: .black))
+                .foregroundStyle(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, compact ? 10 : 12)
+        .padding(.vertical, compact ? 8 : 10)
+        .background(
+            RoundedRectangle(cornerRadius: compact ? 16 : 18, style: .continuous)
+                .fill(VaultPalette.panelSoft.opacity(compact ? 0.82 : 0.94))
+                .overlay(
+                    RoundedRectangle(cornerRadius: compact ? 16 : 18, style: .continuous)
+                        .stroke(Color.white.opacity(0.07), lineWidth: 1)
+                )
+        )
+    }
+
+    private func priceText(for quote: CardPriceQuote?) -> String {
         guard let quote else { return "N/D" }
         return vaultFormattedPrice(amount: quote.amount, currencyCode: quote.currency)
-    }
-
-    private var deltaText: String {
-        guard let quote else { return "prezzo non disponibile" }
-        let sign = quote.delta24h >= 0 ? "+" : ""
-        return "\(sign)\(quote.delta24h.formatted(.number.precision(.fractionLength(2))))%"
-    }
-
-    private var deltaColor: Color {
-        guard let quote else { return .white.opacity(0.5) }
-        return quote.delta24h >= 0 ? VaultPalette.success : VaultPalette.warning
     }
 }

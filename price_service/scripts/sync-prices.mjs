@@ -16,6 +16,16 @@ const RIFTCODEX_HEADERS = {
   Accept: "application/json",
   "User-Agent": "RuneShelfPriceService/0.1 (+https://github.com/sbrakkdev/rift_vault)",
 };
+const LANGUAGE_CONFIGS = [
+  {
+    key: "english",
+    locales: ["en"],
+  },
+  {
+    key: "chinese",
+    locales: ["zh", "cn"],
+  },
+];
 
 const config = {
   riftCodexBaseURL: process.env.RIFTCODEX_API_BASE_URL || "https://api.riftcodex.com",
@@ -42,14 +52,21 @@ async function main() {
   const catalog = await fetchCatalog();
   console.log(`Catalog loaded: ${catalog.length} cards.`);
 
-  const quotesByTCGPlayerID = await fetchCardTraderQuotesByTCGPlayerID(catalog);
-  console.log(`Quotes loaded: ${quotesByTCGPlayerID.size} priced cards.`);
+  const quotesByLanguage = await fetchCardTraderQuotesByLanguage(catalog);
+  console.log(
+    `Quotes loaded: english=${quotesByLanguage.english.size}, chinese=${quotesByLanguage.chinese.size}.`
+  );
 
   const cards = catalog.map((card) => {
-    const quote = card.tcgplayerId ? quotesByTCGPlayerID.get(card.tcgplayerId) ?? null : null;
+    const languagePrices = {
+      english: card.tcgplayerId ? quotesByLanguage.english.get(card.tcgplayerId) ?? null : null,
+      chinese: card.tcgplayerId ? quotesByLanguage.chinese.get(card.tcgplayerId) ?? null : null,
+    };
+
     return {
       ...card,
-      price: quote,
+      price: languagePrices.english,
+      languagePrices,
     };
   });
 
@@ -172,7 +189,7 @@ function compareCards(lhs, rhs) {
   return lhs.name.localeCompare(rhs.name);
 }
 
-async function fetchCardTraderQuotesByTCGPlayerID(cards) {
+async function fetchCardTraderQuotesByLanguage(cards) {
   const eligibleTCGPlayerIDs = new Set(
     cards.map((card) => card.tcgplayerId).filter(Boolean)
   );
@@ -183,7 +200,9 @@ async function fetchCardTraderQuotesByTCGPlayerID(cards) {
   const expansions = await fetchCardTraderExpansions(game.id);
   console.log(`CardTrader expansions loaded: ${expansions.length}.`);
 
-  const quotes = new Map();
+  const quotesByLanguage = Object.fromEntries(
+    LANGUAGE_CONFIGS.map((config) => [config.key, new Map()])
+  );
 
   for (const expansion of expansions) {
     const blueprints = await fetchBlueprintsForExpansion(expansion.id);
@@ -205,25 +224,39 @@ async function fetchCardTraderQuotesByTCGPlayerID(cards) {
       continue;
     }
 
-    const productsByBlueprint = await fetchMarketplaceProductsForExpansion(expansion.id);
-    let pricedInExpansion = 0;
+    for (const languageConfig of LANGUAGE_CONFIGS) {
+      let pricedInExpansion = 0;
 
-    for (const [blueprintID, tcgplayerId] of tcgplayerToBlueprint.entries()) {
-      const products = Array.isArray(productsByBlueprint[blueprintID]) ? productsByBlueprint[blueprintID] : [];
-      const selected = selectCardTraderProduct(products);
-      if (!selected) {
-        continue;
+      for (const locale of languageConfig.locales) {
+        const productsByBlueprint = await fetchMarketplaceProductsForExpansion(expansion.id, locale);
+
+        for (const [blueprintID, tcgplayerId] of tcgplayerToBlueprint.entries()) {
+          const products = Array.isArray(productsByBlueprint[blueprintID]) ? productsByBlueprint[blueprintID] : [];
+          const selected = selectLowestPriceProduct(products);
+          if (!selected) {
+            continue;
+          }
+
+          const quote = buildCardTraderQuote(selected);
+          const current = quotesByLanguage[languageConfig.key].get(tcgplayerId) ?? null;
+          if (current === null || quote.amount < current.amount) {
+            if (current === null) {
+              pricedInExpansion += 1;
+            }
+            quotesByLanguage[languageConfig.key].set(tcgplayerId, quote);
+          }
+        }
+
+        await sleep(CARDTRADER_DELAY_MS);
       }
 
-      quotes.set(tcgplayerId, buildCardTraderQuote(selected));
-      pricedInExpansion += 1;
+      console.log(
+        `CardTrader priced ${pricedInExpansion} ${languageConfig.key} cards for expansion ${expansion.name}.`
+      );
     }
-
-    console.log(`CardTrader priced ${pricedInExpansion} cards for expansion ${expansion.name}.`);
-    await sleep(CARDTRADER_DELAY_MS);
   }
 
-  return quotes;
+  return quotesByLanguage;
 }
 
 async function fetchCardTraderGame() {
@@ -265,8 +298,10 @@ async function fetchBlueprintsForExpansion(expansionID) {
   return unwrapCardTraderArray(payload);
 }
 
-async function fetchMarketplaceProductsForExpansion(expansionID) {
-  return cardTraderGET(`/marketplace/products?expansion_id=${encodeURIComponent(expansionID)}&language=en`);
+async function fetchMarketplaceProductsForExpansion(expansionID, language) {
+  return cardTraderGET(
+    `/marketplace/products?expansion_id=${encodeURIComponent(expansionID)}&language=${encodeURIComponent(language)}`
+  );
 }
 
 async function cardTraderGET(pathname) {
@@ -286,7 +321,7 @@ async function cardTraderGET(pathname) {
   return response.json();
 }
 
-function selectCardTraderProduct(products) {
+function selectLowestPriceProduct(products) {
   const candidates = products
     .filter((product) => isAvailableCardTraderProduct(product))
     .map((product) => ({
@@ -301,10 +336,10 @@ function selectCardTraderProduct(products) {
   }
 
   candidates.sort((lhs, rhs) => {
-    if (lhs.conditionRank !== rhs.conditionRank) {
-      return lhs.conditionRank - rhs.conditionRank;
+    if (lhs.priceCents !== rhs.priceCents) {
+      return lhs.priceCents - rhs.priceCents;
     }
-    return lhs.priceCents - rhs.priceCents;
+    return lhs.conditionRank - rhs.conditionRank;
   });
 
   return candidates[0].product;
@@ -375,6 +410,8 @@ function buildCardTraderQuote(product) {
 
 function buildMeta(cards, startedAt, generatedAt) {
   const pricedCards = cards.filter((card) => card.price !== null).length;
+  const englishPricedCards = cards.filter((card) => card.languagePrices?.english !== null).length;
+  const chinesePricedCards = cards.filter((card) => card.languagePrices?.chinese !== null).length;
   const setNames = new Set(cards.map((card) => card.set.name));
 
   return {
@@ -391,6 +428,8 @@ function buildMeta(cards, startedAt, generatedAt) {
       cards: cards.length,
       pricedCards,
       unpricedCards: cards.length - pricedCards,
+      englishPricedCards,
+      chinesePricedCards,
       sets: setNames.size,
     },
   };
@@ -398,14 +437,17 @@ function buildMeta(cards, startedAt, generatedAt) {
 
 function buildPriceIndex(meta, cards) {
   const prices = {};
+  const languagePrices = {};
 
   for (const card of cards) {
     prices[card.id] = card.price;
+    languagePrices[card.id] = card.languagePrices;
   }
 
   return {
     meta,
     prices,
+    languagePrices,
   };
 }
 

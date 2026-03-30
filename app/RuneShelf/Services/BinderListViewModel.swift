@@ -203,6 +203,12 @@ struct RiftCodexMetadataDTO: Decodable {
 
 struct PriceServiceQuotesResponseDTO: Decodable {
     let prices: [String: PriceServiceQuoteDTO?]
+    let languagePrices: [String: PriceServiceLanguageQuotesDTO]?
+
+    enum CodingKeys: String, CodingKey {
+        case prices
+        case languagePrices
+    }
 }
 
 struct PriceServiceCatalogResponseDTO: Decodable {
@@ -214,12 +220,14 @@ struct PriceServiceCatalogCardDTO: Decodable {
     let tcgplayerID: String?
     let publicCode: String?
     let price: PriceServiceQuoteDTO?
+    let languagePrices: PriceServiceLanguageQuotesDTO?
 
     enum CodingKeys: String, CodingKey {
         case id
         case tcgplayerID = "tcgplayerId"
         case publicCode
         case price
+        case languagePrices
     }
 }
 
@@ -230,6 +238,16 @@ struct PriceServiceQuoteDTO: Decodable {
     let delta24h: Double?
     let syncedAt: Date?
     let sourceUpdatedAt: Date?
+}
+
+struct PriceServiceLanguageQuotesDTO: Decodable {
+    let english: PriceServiceQuoteDTO?
+    let chinese: PriceServiceQuoteDTO?
+}
+
+struct MarketQuoteSnapshot {
+    let quotes: [String: CardPriceQuote]
+    let languageQuotes: [String: CardLanguageQuotes]
 }
 
 actor RiftCodexContentService {
@@ -385,8 +403,10 @@ actor MarketQuoteService {
         return formatter
     }()
 
-    func fetchQuotes(for cards: [RiftCard], configuration: AppConfiguration) async throws -> [String: CardPriceQuote] {
-        guard configuration.canLoadLiveMarket else { return [:] }
+    func fetchQuotes(for cards: [RiftCard], configuration: AppConfiguration) async throws -> MarketQuoteSnapshot {
+        guard configuration.canLoadLiveMarket else {
+            return MarketQuoteSnapshot(quotes: [:], languageQuotes: [:])
+        }
         let eligibleCardIDs = Set(cards.map(\.id))
         let eligibleByTCGPlayerID = uniqueCardLookup(
             from: cards,
@@ -414,27 +434,34 @@ actor MarketQuoteService {
 
         let payload = try Self.makeDecoder().decode(PriceServiceQuotesResponseDTO.self, from: data)
         var quotes: [String: CardPriceQuote] = [:]
+        var languageQuotes: [String: CardLanguageQuotes] = [:]
 
         for (cardID, quoteDTO) in payload.prices {
             guard eligibleCardIDs.contains(cardID), let quoteDTO else { continue }
 
-            quotes[cardID] = CardPriceQuote(
-                cardID: cardID,
-                providerName: quoteDTO.provider,
-                currency: quoteDTO.currency,
-                amount: quoteDTO.amount,
-                delta24h: quoteDTO.delta24h ?? 0,
-                updatedAt: quoteDTO.sourceUpdatedAt ?? quoteDTO.syncedAt ?? .now,
-                productURL: nil
-            )
+            quotes[cardID] = makeQuote(cardID: cardID, dto: quoteDTO)
+        }
+
+        if let payloadLanguageQuotes = payload.languagePrices {
+            for (cardID, languageDTO) in payloadLanguageQuotes where eligibleCardIDs.contains(cardID) {
+                languageQuotes[cardID] = makeLanguageQuotes(
+                    cardID: cardID,
+                    english: languageDTO.english ?? quotes[cardID].map(Self.makeDTO),
+                    chinese: languageDTO.chinese
+                )
+            }
+        }
+
+        for cardID in eligibleCardIDs where languageQuotes[cardID] == nil && quotes[cardID] != nil {
+            languageQuotes[cardID] = CardLanguageQuotes(english: quotes[cardID], chinese: nil)
         }
 
         if !quotes.isEmpty {
-            return quotes
+            return MarketQuoteSnapshot(quotes: quotes, languageQuotes: languageQuotes)
         }
 
         guard let catalogURL = catalogSnapshotURL(from: configuration.priceServiceBaseURL) else {
-            return quotes
+            return MarketQuoteSnapshot(quotes: quotes, languageQuotes: languageQuotes)
         }
 
         let (catalogData, catalogResponse) = try await URLSession.shared.data(from: catalogURL)
@@ -450,8 +477,6 @@ actor MarketQuoteService {
 
         let catalogPayload = try Self.makeDecoder().decode(PriceServiceCatalogResponseDTO.self, from: catalogData)
         for card in catalogPayload.cards {
-            guard let quoteDTO = card.price else { continue }
-
             let matchedCardID: String? =
                 eligibleCardIDs.contains(card.id) ? card.id
                 : normalizedIdentifier(card.tcgplayerID).flatMap { eligibleByTCGPlayerID[$0] }
@@ -459,18 +484,56 @@ actor MarketQuoteService {
 
             guard let matchedCardID else { continue }
 
-            quotes[matchedCardID] = CardPriceQuote(
-                cardID: matchedCardID,
-                providerName: quoteDTO.provider,
-                currency: quoteDTO.currency,
-                amount: quoteDTO.amount,
-                delta24h: quoteDTO.delta24h ?? 0,
-                updatedAt: quoteDTO.sourceUpdatedAt ?? quoteDTO.syncedAt ?? .now,
-                productURL: nil
-            )
+            if let quoteDTO = card.price {
+                quotes[matchedCardID] = makeQuote(cardID: matchedCardID, dto: quoteDTO)
+            }
+
+            if let languageDTO = card.languagePrices {
+                languageQuotes[matchedCardID] = makeLanguageQuotes(
+                    cardID: matchedCardID,
+                    english: languageDTO.english ?? quotes[matchedCardID].map(Self.makeDTO),
+                    chinese: languageDTO.chinese
+                )
+            } else if languageQuotes[matchedCardID] == nil, quotes[matchedCardID] != nil {
+                languageQuotes[matchedCardID] = CardLanguageQuotes(english: quotes[matchedCardID], chinese: nil)
+            }
         }
 
-        return quotes
+        return MarketQuoteSnapshot(quotes: quotes, languageQuotes: languageQuotes)
+    }
+
+    private func makeQuote(cardID: String, dto: PriceServiceQuoteDTO) -> CardPriceQuote {
+        CardPriceQuote(
+            cardID: cardID,
+            providerName: dto.provider,
+            currency: dto.currency,
+            amount: dto.amount,
+            delta24h: dto.delta24h ?? 0,
+            updatedAt: dto.sourceUpdatedAt ?? dto.syncedAt ?? .now,
+            productURL: nil
+        )
+    }
+
+    private func makeLanguageQuotes(
+        cardID: String,
+        english: PriceServiceQuoteDTO?,
+        chinese: PriceServiceQuoteDTO?
+    ) -> CardLanguageQuotes {
+        CardLanguageQuotes(
+            english: english.map { makeQuote(cardID: cardID, dto: $0) },
+            chinese: chinese.map { makeQuote(cardID: cardID, dto: $0) }
+        )
+    }
+
+    private static func makeDTO(from quote: CardPriceQuote) -> PriceServiceQuoteDTO {
+        PriceServiceQuoteDTO(
+            provider: quote.providerName,
+            currency: quote.currency,
+            amount: quote.amount,
+            delta24h: quote.delta24h,
+            syncedAt: quote.updatedAt,
+            sourceUpdatedAt: quote.updatedAt
+        )
     }
 
     private func uniqueCardLookup(
@@ -599,6 +662,7 @@ final class RuneShelfStore: ObservableObject {
         }
     }
     @Published private(set) var quotes: [String: CardPriceQuote] = [:]
+    @Published private(set) var languageQuotes: [String: CardLanguageQuotes] = [:]
     @Published var scoreboard = ScoreboardState()
     @Published var isSyncingCatalog = false
     @Published var isRefreshingMarket = false
@@ -912,6 +976,7 @@ final class RuneShelfStore: ObservableObject {
                 decks = snapshot.decks
                 matches = snapshot.matches
                 quotes = snapshot.quotes
+                languageQuotes = snapshot.languageQuotes
                 scoreboard = snapshot.scoreboard
                 let removedLegacyData = removeLegacySampleDataIfNeeded()
                 if removedLegacyData {
@@ -930,11 +995,13 @@ final class RuneShelfStore: ObservableObject {
 
         if !configuration.canLoadLiveMarket, !quotes.isEmpty {
             quotes = [:]
+            languageQuotes = [:]
             persistSoon()
         }
 
         if marketQuotesNeedRefresh {
             quotes = [:]
+            languageQuotes = [:]
             persistSoon()
         }
 
@@ -1683,7 +1750,14 @@ final class RuneShelfStore: ObservableObject {
     }
 
     func quote(for card: RiftCard) -> CardPriceQuote? {
-        quotes[card.id]
+        quotes(for: card).english
+    }
+
+    func quotes(for card: RiftCard) -> CardLanguageQuotes {
+        if let storedLanguageQuotes = languageQuotes[card.id] {
+            return storedLanguageQuotes
+        }
+        return CardLanguageQuotes(english: quotes[card.id], chinese: nil)
     }
 
     func availableCards(for slot: DeckSlot, ownedOnly: Bool, searchText: String = "") -> [RiftCard] {
@@ -1959,6 +2033,7 @@ final class RuneShelfStore: ObservableObject {
 
         guard configuration.canLoadLiveMarket else {
             quotes = [:]
+            languageQuotes = [:]
             persistSoon()
             showBanner("Configura l'URL del Price Service per vedere i prezzi live.", style: .info)
             return
@@ -1966,10 +2041,11 @@ final class RuneShelfStore: ObservableObject {
 
         if quotes.values.contains(where: { $0.currency.uppercased() != "EUR" }) {
             quotes = [:]
+            languageQuotes = [:]
             persistSoon()
         }
 
-        let liveQuotes: [String: CardPriceQuote]
+        let liveQuotes: MarketQuoteSnapshot
         do {
             liveQuotes = try await marketService.fetchQuotes(for: cards, configuration: configuration)
         } catch {
@@ -1977,10 +2053,11 @@ final class RuneShelfStore: ObservableObject {
             return
         }
 
-        if !liveQuotes.isEmpty {
-            quotes = liveQuotes
+        if !liveQuotes.quotes.isEmpty {
+            quotes = liveQuotes.quotes
+            languageQuotes = liveQuotes.languageQuotes
             persistSoon()
-            showBanner("Prezzi aggiornati dal Price Service per \(liveQuotes.count) carte.", style: .success)
+            showBanner("Prezzi aggiornati dal Price Service per \(liveQuotes.quotes.count) carte.", style: .success)
             return
         }
 
@@ -2019,6 +2096,7 @@ final class RuneShelfStore: ObservableObject {
         decks = []
         matches = []
         quotes = [:]
+        languageQuotes = [:]
         scoreboard = ScoreboardState()
         publicMatchHistoryByDeckID = [:]
     }
@@ -2054,6 +2132,7 @@ final class RuneShelfStore: ObservableObject {
         catalog.removeAll { sampleCardIDs.contains($0.id) }
         collection = collection.filter { !sampleCardIDs.contains($0.key) }
         quotes = quotes.filter { !sampleCardIDs.contains($0.key) }
+        languageQuotes = languageQuotes.filter { !sampleCardIDs.contains($0.key) }
         decks.removeAll(where: isLegacySampleDeck)
         matches.removeAll { isLegacySampleMatch($0, removedDeckIDs: removedDeckIDs) }
 
@@ -2106,6 +2185,7 @@ final class RuneShelfStore: ObservableObject {
             return deck
         }
         quotes = quotes.filter { validCardIDs.contains($0.key) }
+        languageQuotes = languageQuotes.filter { validCardIDs.contains($0.key) }
     }
 
     private func restoreAuthIfPossible() async {
@@ -2720,6 +2800,7 @@ final class RuneShelfStore: ObservableObject {
                 decks: self.decks,
                 matches: self.matches,
                 quotes: self.quotes,
+                languageQuotes: self.languageQuotes,
                 scoreboard: self.scoreboard
             )
 
@@ -2737,6 +2818,7 @@ final class RuneShelfStore: ObservableObject {
             decks: decks,
             matches: matches,
             quotes: quotes,
+            languageQuotes: languageQuotes,
             scoreboard: scoreboard
         )
 
