@@ -19,11 +19,11 @@ const RIFTCODEX_HEADERS = {
 const LANGUAGE_CONFIGS = [
   {
     key: "english",
-    locales: ["en"],
+    productLanguages: ["en"],
   },
   {
     key: "chinese",
-    locales: ["zh", "cn"],
+    productLanguages: ["zh-cn"],
   },
 ];
 
@@ -224,30 +224,30 @@ async function fetchCardTraderQuotesByLanguage(cards) {
       continue;
     }
 
+    const productsByBlueprint = await fetchMarketplaceProductsForExpansion(expansion.id);
+    await sleep(CARDTRADER_DELAY_MS);
+
     for (const languageConfig of LANGUAGE_CONFIGS) {
       let pricedInExpansion = 0;
 
-      for (const locale of languageConfig.locales) {
-        const productsByBlueprint = await fetchMarketplaceProductsForExpansion(expansion.id, locale);
-
-        for (const [blueprintID, tcgplayerId] of tcgplayerToBlueprint.entries()) {
-          const products = Array.isArray(productsByBlueprint[blueprintID]) ? productsByBlueprint[blueprintID] : [];
-          const selected = selectLowestPriceProduct(products);
-          if (!selected) {
-            continue;
-          }
-
-          const quote = buildCardTraderQuote(selected);
-          const current = quotesByLanguage[languageConfig.key].get(tcgplayerId) ?? null;
-          if (current === null || quote.amount < current.amount) {
-            if (current === null) {
-              pricedInExpansion += 1;
-            }
-            quotesByLanguage[languageConfig.key].set(tcgplayerId, quote);
-          }
+      for (const [blueprintID, tcgplayerId] of tcgplayerToBlueprint.entries()) {
+        const products = Array.isArray(productsByBlueprint[blueprintID]) ? productsByBlueprint[blueprintID] : [];
+        const languageProducts = products.filter((product) =>
+          productMatchesLanguage(product, languageConfig.productLanguages)
+        );
+        const selected = selectLowestPriceProduct(languageProducts);
+        if (!selected) {
+          continue;
         }
 
-        await sleep(CARDTRADER_DELAY_MS);
+        const quote = buildCardTraderQuote(selected);
+        const current = quotesByLanguage[languageConfig.key].get(tcgplayerId) ?? null;
+        if (current === null || quote.amount < current.amount) {
+          if (current === null) {
+            pricedInExpansion += 1;
+          }
+          quotesByLanguage[languageConfig.key].set(tcgplayerId, quote);
+        }
       }
 
       console.log(
@@ -298,9 +298,9 @@ async function fetchBlueprintsForExpansion(expansionID) {
   return unwrapCardTraderArray(payload);
 }
 
-async function fetchMarketplaceProductsForExpansion(expansionID, language) {
+async function fetchMarketplaceProductsForExpansion(expansionID) {
   return cardTraderGET(
-    `/marketplace/products?expansion_id=${encodeURIComponent(expansionID)}&language=${encodeURIComponent(language)}`
+    `/marketplace/products?expansion_id=${encodeURIComponent(expansionID)}`
   );
 }
 
@@ -343,6 +343,24 @@ function selectLowestPriceProduct(products) {
   });
 
   return candidates[0].product;
+}
+
+function productMatchesLanguage(product, expectedLanguages) {
+  const productLanguage = normalizeRiftboundLanguage(product?.properties_hash?.riftbound_language);
+  return productLanguage !== null && expectedLanguages.includes(productLanguage);
+}
+
+function normalizeRiftboundLanguage(value) {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  return trimmed.toLowerCase().replaceAll("_", "-");
 }
 
 function isAvailableCardTraderProduct(product) {
