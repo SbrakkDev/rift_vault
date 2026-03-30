@@ -40,7 +40,9 @@ jobs:
         run: |
           cp docs/support.html price_service/public/support.html
           cp docs/privacy-policy.html price_service/public/privacy-policy.html
-          cp docs/product-overview.html price_service/public/product-overview.html
+          mkdir -p price_service/public/product-overview.html
+          cp docs/product-overview.html/index.html price_service/public/product-overview.html/index.html
+          cp docs/product-overview.html/riot.txt price_service/public/product-overview.html/riot.txt
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
