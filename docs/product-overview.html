@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RuneShelf Product Overview</title>
+    <meta
+      name="description"
+      content="Product overview for RuneShelf, including app purpose, user flow, contact details, and legal disclaimer."
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #071123;
+        --panel: rgba(18, 31, 56, 0.94);
+        --panel-border: rgba(122, 206, 234, 0.18);
+        --text: #f3f6fb;
+        --muted: #aeb8ca;
+        --accent: #59d0f4;
+        --accent-soft: rgba(89, 208, 244, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top right, rgba(89, 208, 244, 0.12), transparent 28%),
+          linear-gradient(180deg, #0b1730 0%, var(--bg) 100%);
+        color: var(--text);
+      }
+
+      .page {
+        width: min(980px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 48px 0 72px;
+      }
+
+      .eyebrow {
+        margin: 0 0 10px;
+        color: var(--accent);
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 3.4rem);
+        line-height: 0.98;
+      }
+
+      .subtitle {
+        margin: 14px 0 0;
+        max-width: 760px;
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.6;
+      }
+
+      .card {
+        margin-top: 24px;
+        border: 1px solid var(--panel-border);
+        border-radius: 28px;
+        background: var(--panel);
+        box-shadow: 0 22px 60px rgba(0, 0, 0, 0.28);
+        overflow: hidden;
+      }
+
+      .card-body {
+        padding: 30px 24px 32px;
+      }
+
+      section + section {
+        margin-top: 24px;
+        padding-top: 24px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      h2 {
+        margin: 0 0 12px;
+        font-size: 1.25rem;
+      }
+
+      p,
+      li {
+        color: var(--muted);
+        font-size: 1rem;
+        line-height: 1.7;
+      }
+
+      ul {
+        margin: 12px 0 0 20px;
+        padding: 0;
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      .pill-grid {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        margin-top: 16px;
+      }
+
+      .pill {
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: rgba(8, 19, 38, 0.45);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .pill-label {
+        margin: 0 0 4px;
+        color: var(--accent);
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .pill-value {
+        margin: 0;
+        color: var(--text);
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 1.5;
+      }
+
+      .notice {
+        margin-top: 18px;
+        padding: 18px 20px;
+        border-radius: 18px;
+        background: var(--accent-soft);
+        border: 1px solid var(--panel-border);
+      }
+
+      .notice strong {
+        color: var(--text);
+      }
+
+      @media (max-width: 640px) {
+        .page {
+          width: min(100% - 20px, 980px);
+          padding: 28px 0 48px;
+        }
+
+        .card-body {
+          padding: 24px 18px 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <p class="eyebrow">RuneShelf</p>
+      <h1>Product Overview</h1>
+      <p class="subtitle">
+        RuneShelf is an iPhone companion app for Riftbound players focused on
+        collection tracking, deck building, deck sharing, friends, and manual
+        match support. It is not a standalone digital gameplay client.
+      </p>
+
+      <article class="card">
+        <div class="card-body">
+          <section>
+            <h2>Product summary</h2>
+            <p>
+              RuneShelf helps players organize their card collection, build
+              decks, track owned and wanted cards, save deck versions, manage
+              match history, browse friends, and inspect card information in a
+              mobile-friendly interface.
+            </p>
+
+            <div class="pill-grid">
+              <div class="pill">
+                <p class="pill-label">Platform</p>
+                <p class="pill-value">iPhone / iOS</p>
+              </div>
+              <div class="pill">
+                <p class="pill-label">Primary use case</p>
+                <p class="pill-value">Deck builder and card library</p>
+              </div>
+              <div class="pill">
+                <p class="pill-label">Audience</p>
+                <p class="pill-value">Riftbound players and community members</p>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h2>Core user flow</h2>
+            <ul>
+              <li>User opens the app and signs in with email code authentication.</li>
+              <li>User syncs the card catalog and browses cards in Binder.</li>
+              <li>User marks owned copies, wanted cards, and custom card lists.</li>
+              <li>User creates and edits decks using official card data and deckbuilding helpers.</li>
+              <li>User can save deck snapshots, review versions, and log manual match results.</li>
+              <li>User can optionally manage friends and browse community deck activity.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>What the app does not do</h2>
+            <ul>
+              <li>It does not automate Riftbound gameplay or enforce live game rules during play.</li>
+              <li>It does not act as a standalone playable digital client for Riftbound.</li>
+              <li>It does not resolve turns, attacks, effects, or hidden game-state interactions.</li>
+              <li>It is intended as a companion, organizer, and deckbuilding utility.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Support and contact</h2>
+            <p>
+              Support page:
+              <a href="./support.html">RuneShelf Support</a>
+            </p>
+            <p>
+              Privacy Policy:
+              <a href="./privacy-policy.html">RuneShelf Privacy Policy</a>
+            </p>
+            <p>
+              Support email:
+              <a href="mailto:runeshelfapp@gmail.com">runeshelfapp@gmail.com</a>
+            </p>
+          </section>
+
+          <section>
+            <h2>Legal disclaimer</h2>
+            <div class="notice">
+              <strong>RuneShelf</strong> was created under Riot Games'
+              "Legal Jibber Jabber" policy using assets owned by Riot Games.
+              Riot Games does not endorse or sponsor this project.
+            </div>
+          </section>
+        </div>
+      </article>
+    </main>
+  </body>
+</html>
