@@ -136,6 +136,7 @@ private struct DeckDetailView: View {
     @State private var editRoute: DeckEditorRoute?
     @State private var showFullHistory = false
     @State private var selectedVersion: DeckVersion?
+    @State private var focusedCard: RiftCard?
 
     var body: some View {
         Group {
@@ -148,7 +149,12 @@ private struct DeckDetailView: View {
                         HStack(spacing: 14) {
                             Group {
                                 if let legend {
-                                    CardArtView(card: legend, width: 104, height: 146, cornerRadius: 8)
+                                    Button {
+                                        focusedCard = legend
+                                    } label: {
+                                        CardArtView(card: legend, width: 104, height: 146, cornerRadius: 8)
+                                    }
+                                    .buttonStyle(.plain)
                                 } else {
                                     RoundedRectangle(cornerRadius: 8, style: .continuous)
                                         .fill(Color.black.opacity(0.18))
@@ -211,7 +217,10 @@ private struct DeckDetailView: View {
                                     .foregroundStyle(.white.opacity(0.64))
                             } else {
                                 ForEach(deckSections) { section in
-                                    ReadOnlyDeckCardSection(section: section)
+                                    ReadOnlyDeckCardSection(
+                                        section: section,
+                                        onPreview: { focusedCard = $0.card }
+                                    )
                                 }
                             }
                         }
@@ -338,6 +347,11 @@ private struct DeckDetailView: View {
                     }
                     .presentationDetents([.medium, .large])
                     .presentationDragIndicator(.visible)
+                }
+                .sheet(item: $focusedCard) { card in
+                    DeckBuilderCardFocusView(card: card)
+                        .presentationDetents([.large])
+                        .presentationDragIndicator(.visible)
                 }
                 .alert("Sei sicuro di voler eliminare?", isPresented: $showDeleteConfirmation) {
                     Button("Elimina", role: .destructive) {
@@ -2154,6 +2168,7 @@ private struct DeckManaCurveView: View {
 
 private struct ReadOnlyDeckCardSection: View {
     let section: DeckSectionData
+    let onPreview: (DeckSectionCard) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -2163,7 +2178,7 @@ private struct ReadOnlyDeckCardSection: View {
 
             LazyVStack(spacing: 8) {
                 ForEach(section.cards) { item in
-                    ReadOnlyDeckCurrentCardRow(item: item)
+                    ReadOnlyDeckCurrentCardRow(item: item, onPreview: { onPreview(item) })
                 }
             }
         }
@@ -2178,21 +2193,27 @@ private struct ReadOnlyDeckCardSection: View {
 
 private struct ReadOnlyDeckCurrentCardRow: View {
     let item: DeckSectionCard
+    let onPreview: () -> Void
 
     var body: some View {
         HStack(spacing: 12) {
-            CardArtView(card: item.card, width: 48, height: 68, cornerRadius: 5)
+            Button(action: onPreview) {
+                HStack(spacing: 12) {
+                    CardArtView(card: item.card, width: 48, height: 68, cornerRadius: 5)
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text(item.card.name)
-                    .font(.runeStyle(.subheadline, weight: .bold))
-                    .foregroundStyle(.white)
-                    .lineLimit(2)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(item.card.name)
+                            .font(.runeStyle(.subheadline, weight: .bold))
+                            .foregroundStyle(.white)
+                            .lineLimit(2)
 
-                Text("\(item.count) copie")
-                    .font(.runeStyle(.caption, weight: .semibold))
-                    .foregroundStyle(VaultPalette.highlight)
+                        Text("\(item.count) copie")
+                            .font(.runeStyle(.caption, weight: .semibold))
+                            .foregroundStyle(VaultPalette.highlight)
+                    }
+                }
             }
+            .buttonStyle(.plain)
 
             Spacer()
         }
